@@ -228,6 +228,8 @@ def oled_loop():
         disp.display()
 
 
+HIGHLY_INTERESTING_CLASS = ["ISS", "TIANGONG", "DRAGON", "SOYUZ", "PROGRESS", "HST", "CYGNUS", "GP-B"]
+
 def color_from_name(name, tft=False):
     if "DEB" in name:
         return (255, 0, 0)
@@ -235,6 +237,8 @@ def color_from_name(name, tft=False):
         return (255, 90, 0) if tft else (188, 86, 0)
     elif "FLOCK" in name:
         return (0, 0, 255)
+    elif any(s in name for s in HIGHLY_INTERESTING_CLASS):
+        return (0, 255, 0)
     else:
         return (255, 255, 255) if tft else (255 // 3, 255 // 3, 255 // 3)
 
@@ -244,6 +248,8 @@ def priority_from_name(name):
         return 0
     elif "R/B" in name:
         return 1
+    elif any(s in name for s in HIGHLY_INTERESTING_CLASS):
+        return 10
     else:
         return 2
 
