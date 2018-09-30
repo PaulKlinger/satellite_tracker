@@ -331,6 +331,8 @@ def update_tle_file():
     return datetime.now()
 
 
+TARGET_STEP_TIME = 0.5  # s target delta-t between sat position updates
+
 def main_loop():
     from gpiozero import Button
     from subprocess import check_call
@@ -405,7 +407,9 @@ def main_loop():
     tracker.nearby_now()  # run once to remove errors
     oddstep = True
     show_end_of_lines = False
+    prev_strings = 12 * [(" " * int(128 / 6), TFT.BLACK)]
     while True:
+        step_start_time = time()
         if datetime.now() - tle_updated_time > timedelta(days=1):
             write_message("Downloading TLEs")
             update_tle_file()
@@ -414,8 +418,8 @@ def main_loop():
             tracker.nearby_now()  # run once to remove errors
 
         nearby_sats = tracker.nearby_now()
-        strings = []
 
+        strings = []
         active_leds = {}
         for name, lat, long, alt in nearby_sats:
             _, led_id, _ = leds.closest_led(lat, long, alt)
@@ -438,9 +442,15 @@ def main_loop():
                       0, 0, TFT.WHITE, TFT.BLUE)
         oddstep = not oddstep
         dy = 10
-        for s, c in strings:
-            TFT.put_chars(s, 0, dy, c, TFT.BLACK)  # std font 3 (default)
+        for (s, c), (prev_s, _) in zip(strings, prev_strings):
+            if s != prev_s:
+                TFT.put_chars(s, 0, dy, c, TFT.BLACK)  # std font 3 (default)
             dy += 10
+        prev_strings = strings
+
+        step_time = time() - step_start_time
+        if step_time < TARGET_STEP_TIME:
+            sleep(TARGET_STEP_TIME - step_time)
 
 
 if __name__ == "__main__":
