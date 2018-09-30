@@ -2,7 +2,7 @@ import numpy as np
 import neopixel
 from time import sleep, time
 import itertools
-from random import randint
+from random import randint, shuffle
 from collections import defaultdict
 
 
@@ -128,14 +128,13 @@ def chase_loop(strip, step_time=0.03, timeout=None, current=None):
 
     gradient_length = 10
     max_brightness = 255
-    offset = 0
+    offset = gradient_length
     brightness_gradient = [0] * (strip.numPixels() - gradient_length) + [
         int(round(i ** 2 * max_brightness / gradient_length ** 2)) for i in range(1, gradient_length + 1)]
 
     color_gradient = color_gradient_target(strip, 100)
     while True:
         step_t0 = time()
-        offset += 1
         current = {}
         for i in range(strip.numPixels()):
             current[i] = brightness_gradient[(i - offset) % strip.numPixels()] * color_gradient[i] / 100
@@ -146,6 +145,33 @@ def chase_loop(strip, step_time=0.03, timeout=None, current=None):
             sleep(step_time - elapsed)
         if timeout is not None and time() - start_time >= timeout:
             return current
+        offset += 1
+
+
+def rings_loop(strip, step_time=0.25, timeout=None, current=None):
+    if current is None:
+        set_all(strip, neopixel.Color(0, 0, 0))
+        current = defaultdict(lambda: (0, 0, 0))
+    start_time = time()
+
+    rings = [range(18), range(18, 18 + 12), range(18 + 12, 18 + 12 + 6), [18 + 12 + 6]]
+    rings.reverse()
+    colors = [np.array(hsl_to_rgbnorm(h, 1, 0.5)) * 100 for h in np.linspace(0, 360, 4 * 4)]
+    shuffle(colors)
+
+    offset = 0
+    while True:
+        target = defaultdict(lambda: (0, 0, 0))
+        for level in range(4):
+            for ringid, ring in enumerate(rings):
+                for l in ring:
+                    target[l + level * (18 + 12 + 6 + 1)] = colors[(level + offset + ringid) % (4 * 4)]
+        current = to_target(strip, current, target, step_time)
+
+        if timeout is not None and time() - start_time >= timeout:
+            return current
+
+        offset += 1
 
 
 def init():
@@ -179,5 +205,6 @@ if __name__ == "__main__":
     strip, leds = init()
     current = None
     while True:
+        current = rings_loop(strip, timeout=5, current=current)
         current = chase_loop(strip, timeout=5, current=current)
         current = random_loop(strip, timeout=5, current=current)
