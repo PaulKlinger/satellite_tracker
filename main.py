@@ -57,13 +57,13 @@ class SatTracker(object):
         self.last_query_t = t1
 
         lons, lats, alts, errors = self.orbs.get_lonlatalt(now)
-        valid_satpos = zip(self.satnames[~errors], lons, lats, alts)
+        valid_satpos = zip(self.satnames[~errors], lats, lons, alts)
         t2 = time()
         # nearby = [(name, lat, lon, alt) for name, lon, lat, alt in valid_satpos if
         #          abs(lon - self.loc[1]) < 5 and abs(lat - self.loc[0]) < 5 and distance.distance(self.loc,
         #                                                                                          (lat, lon)).km < 200]
-        nearby = [(name, lat, lon, alt) for name, lon, lat, alt in valid_satpos if
-                  abs(lon - self.loc[1]) < 5 and abs(lat - self.loc[0]) < 5 and self.distance(lat, lon) < 200]
+        nearby = [(name, lat, lon, alt) for name, lat, lon, alt in valid_satpos if
+                  abs(lon - self.loc[1]) < 3 and abs(lat - self.loc[0]) < 3 and self.distance(lat, lon) < 200]
 
         t3 = time()
         print("loc:{:.2f}s dist: {:.2f}s tot: {:.2f}s, sats: {:02d}".format(t2 - t1, t3 - t2, t3 - t1, len(nearby)))

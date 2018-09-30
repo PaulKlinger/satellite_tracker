@@ -622,7 +622,7 @@ class Orbitals(object):
             lat2 = lat
             c = 1 / (np.sqrt(1 - e2 * (np.sin(lat2) ** 2)))
             lat = np.arctan2(pos_z + c * e2 * np.sin(lat2), r)
-            if np.all(abs(lat - lat2) < 1e-10):
+            if np.all(abs(lat - lat2) < 1e-5):
                 break
         alt = r / np.cos(lat) - c
         alt *= A
