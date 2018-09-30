@@ -228,14 +228,15 @@ def oled_loop():
         disp.display()
 
 
-HIGHLY_INTERESTING_CLASS = ["ISS", "TIANGONG", "DRAGON", "SOYUZ", "PROGRESS", "HST", "CYGNUS", "GP-B"]
+HIGHLY_INTERESTING_CLASS = ["ISS", "TIANGONG", "DRAGON", "SOYUZ", "PROGRESS", "HST", "CYGNUS", "GP-B", "TINTIN"]
+PLANETLABS_CLASS = ["FLOCK", "DOVE"]
 
 def color_from_name(name, tft=False):
     if "DEB" in name:
         return (255, 0, 0)
     elif "R/B" in name:
         return (255, 90, 0) if tft else (188, 86, 0)
-    elif "FLOCK" in name:
+    elif any(s in name for s in PLANETLABS_CLASS) in name:
         return (0, 0, 255)
     elif any(s in name for s in HIGHLY_INTERESTING_CLASS):
         return (0, 255, 0)
