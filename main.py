@@ -12,7 +12,7 @@ import numpy as np
 from geopy import distance
 
 from orbit_np import Orbitals
-from demo import chase_loop, random_loop, rings_loop
+from demo import chase_loop, random_loop, rings_loop, spinning_loop
 
 
 class SatTracker(object):
@@ -249,8 +249,9 @@ def color_priority_from_name(name):
 
 def run_demo(strip):
     current = chase_loop(strip, timeout=5)
+    current = spinning_loop(strip, current=current, timeout=5)
     current = rings_loop(strip, current=current, timeout=5)
-    current = random_loop(strip, timeout=5, current=current)
+    current = random_loop(strip, current=current, timeout=5)
 
 
 def led_control(led_queue):

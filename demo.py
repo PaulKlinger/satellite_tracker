@@ -113,7 +113,7 @@ def hsl_to_rgbnorm(h, s, l):
     return (r1 + m, g1 + m, b1 + m)
 
 
-def color_gradient_target(strip, tot, saturation=1, lightness=0.5):
+def full_color_gradient(strip, tot, saturation=1, lightness=0.5):
     hues = np.linspace(0, 360, strip.numPixels())
     return [np.array(hsl_to_rgbnorm(h, saturation, lightness)) * tot for h in hues]
 
@@ -123,7 +123,6 @@ def chase_loop(strip, step_time=0.03, timeout=None, current=None):
         set_all(strip, neopixel.Color(0, 0, 0))
     else:
         to_target(strip, current, defaultdict(lambda: (0, 0, 0)))
-    current = defaultdict(lambda: (0, 0, 0))
     start_time = time()
 
     gradient_length = 10
@@ -132,7 +131,7 @@ def chase_loop(strip, step_time=0.03, timeout=None, current=None):
     brightness_gradient = [0] * (strip.numPixels() - gradient_length) + [
         int(round(i ** 2 * max_brightness / gradient_length ** 2)) for i in range(1, gradient_length + 1)]
 
-    color_gradient = color_gradient_target(strip, 100)
+    color_gradient = full_color_gradient(strip, 100)
     while True:
         step_t0 = time()
         current = {}
@@ -148,14 +147,17 @@ def chase_loop(strip, step_time=0.03, timeout=None, current=None):
         offset += 1
 
 
+RING_LEDNS = [1, 6, 12, 18]
+RINGS = [[18 + 12 + 6], range(18 + 12, 18 + 12 + 6), range(18, 18 + 12), range(18)]
+LEVEL_LEDN = sum(RING_LEDNS)
+
+
 def rings_loop(strip, step_time=0.25, timeout=None, current=None):
     if current is None:
         set_all(strip, neopixel.Color(0, 0, 0))
         current = defaultdict(lambda: (0, 0, 0))
     start_time = time()
 
-    rings = [range(18), range(18, 18 + 12), range(18 + 12, 18 + 12 + 6), [18 + 12 + 6]]
-    rings.reverse()
     colors = [np.array(hsl_to_rgbnorm(h, 1, 0.5)) * 100 for h in np.linspace(0, 360, 4 * 4)]
     shuffle(colors)
 
@@ -163,9 +165,41 @@ def rings_loop(strip, step_time=0.25, timeout=None, current=None):
     while True:
         target = defaultdict(lambda: (0, 0, 0))
         for level in range(4):
-            for ringid, ring in enumerate(rings):
+            for ringid, ring in enumerate(RINGS):
                 for l in ring:
-                    target[l + level * (18 + 12 + 6 + 1)] = colors[(level + offset + ringid) % (4 * 4)]
+                    target[l + level * LEVEL_LEDN] = colors[(level + offset + ringid) % (4 * 4)]
+        current = to_target(strip, current, target, step_time)
+
+        if timeout is not None and time() - start_time >= timeout:
+            return current
+
+        offset += 1
+
+
+def spinning_loop(strip, step_time=0.1, timeout=None, current=None):
+    if current is None:
+        set_all(strip, neopixel.Color(0, 0, 0))
+        current = defaultdict(lambda: (0, 0, 0))
+    start_time = time()
+
+    max_brightness = 255
+    brightness_gradients = [[
+        int(round(i ** 2 * max_brightness / gradient_length ** 2)) for i in range(1, gradient_length + 1)] for
+        gradient_length in RING_LEDNS]
+
+    color_gradient = full_color_gradient(strip, 100)
+
+    offset = 0
+    while True:
+        target = defaultdict(lambda: (0, 0, 0))
+        for level in range(4):
+            for ring_id, ring in enumerate(RINGS):
+                for led_ring_id, led_level_id in enumerate(ring):
+                    led_id = led_level_id + level * LEVEL_LEDN
+                    target[led_id] = (
+                            brightness_gradients[ring_id][
+                                (led_ring_id - offset * (1 - 2 * ((ring_id + level) % 2))) % RING_LEDNS[ring_id]] *
+                            color_gradient[led_id] / 100)
         current = to_target(strip, current, target, step_time)
 
         if timeout is not None and time() - start_time >= timeout:
@@ -205,6 +239,7 @@ if __name__ == "__main__":
     strip, leds = init()
     current = None
     while True:
+        current = spinning_loop(strip, timeout=5, current=current)
         current = rings_loop(strip, timeout=5, current=current)
         current = chase_loop(strip, timeout=5, current=current)
         current = random_loop(strip, timeout=5, current=current)
