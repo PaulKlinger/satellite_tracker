@@ -56,9 +56,10 @@ class SatTracker(object):
         lons, lats, alts, errors = self.orbs.get_lonlatalt(now)
         t2 = time()
         rough_near = np.logical_and(np.abs(lats - self.loc[0]) < 3, np.abs(lons - self.loc[1]) < 3)
-        valid_satpos = list(zip(self.satnames[~errors][rough_near], lats[rough_near], lons[rough_near], alts[rough_near]))
+        valid_satpos = list(
+            zip(self.satnames[~errors][rough_near], lats[rough_near], lons[rough_near], alts[rough_near]))
         nearby = [(name, lat, lon, alt) for name, lat, lon, alt in valid_satpos if
-                   distance.distance(self.loc, (lat, lon)).km < 200]
+                  distance.distance(self.loc, (lat, lon)).km < 200]
         t3 = time()
         print("loc:{:.2f}s dist: {:.2f}s tot: {:.2f}s, sats: {:02d}".format(t2 - t1, t3 - t2, t3 - t1, len(nearby)))
 
@@ -231,28 +232,19 @@ def oled_loop():
 HIGHLY_INTERESTING_CLASS = ["ISS", "TIANGONG", "DRAGON", "SOYUZ", "PROGRESS", "HST", "CYGNUS", "GP-B", "TINTIN"]
 PLANETLABS_CLASS = ["FLOCK", "DOVE"]
 
-def color_from_name(name, tft=False):
-    if "DEB" in name:
-        return (255, 0, 0)
-    elif "R/B" in name:
-        return (255, 90, 0) if tft else (188, 86, 0)
-    elif any(s in name for s in PLANETLABS_CLASS) in name:
-        return (0, 0, 255)
-    elif any(s in name for s in HIGHLY_INTERESTING_CLASS):
-        return (0, 255, 0)
-    else:
-        return (255, 255, 255) if tft else (255 // 3, 255 // 3, 255 // 3)
+CLASS_COLORS_PRIORITIES = [  # [substring, substring,...]: (tft_color, priority, led_color)
+    (["DEB"], ((255, 0, 0), 0, (255, 0, 0))),
+    (["R/B"], ((255, 90, 0), 1, (188, 86, 0))),
+    (PLANETLABS_CLASS, ((0, 0, 255), 2, (0, 0, 255))),
+    (HIGHLY_INTERESTING_CLASS, ((0, 255, 0), 10, (0, 255, 0))),
+    ([""], ((255, 255, 255), 2, (255 // 3, 255 // 3, 255 // 3))),  # wildcard
+]
 
 
-def priority_from_name(name):
-    if "DEB" in name:
-        return 0
-    elif "R/B" in name:
-        return 1
-    elif any(s in name for s in HIGHLY_INTERESTING_CLASS):
-        return 10
-    else:
-        return 2
+def color_priority_from_name(name):
+    for c, tftc_prio_ledc in CLASS_COLORS_PRIORITIES:
+        if any(s in name for s in c):
+            return tftc_prio_ledc
 
 
 def run_demo(strip):
@@ -309,7 +301,7 @@ def led_control(led_queue):
                 sleep(0.5)
                 break
             for i in range(strip.numPixels()):
-                target[i] = color_from_name(message[i]) if i in message else (0, 0, 0)
+                target[i] = message[i][1] if i in message else (0, 0, 0)
                 step[i] = tuple((t - c) / (switch_time / stepsize) for t, c in zip(target[i], current[i]))
 
         for i in range(strip.numPixels()):
@@ -344,6 +336,7 @@ def update_tle_file():
 
 TARGET_STEP_TIME = 0.5  # s target delta-t between sat position updates
 EQUIV_RADIUS = 200  # km
+
 
 def main_loop():
     from gpiozero import Button
@@ -435,13 +428,14 @@ def main_loop():
         active_leds = {}
         for name, lat, long, alt in nearby_sats:
             _, led_id, _ = leds.closest_led(lat, long, alt)
-            if (led_id not in active_leds) or priority_from_name(name) > priority_from_name(active_leds[led_id]):
-                active_leds[led_id] = name
+            tft_color, priority, led_color = color_priority_from_name(name)
+            if (led_id not in active_leds) or priority > active_leds[led_id][0]:
+                active_leds[led_id] = (priority, led_color)
             line = name[2:] + " {}km".format(int(round(alt)))
             if show_end_of_lines:
                 line = line[-21:]
             line = line[:21] + max(21 - len(line), 0) * " "  # trim to display length and pad
-            strings.append((line, TFT.colour565(*color_from_name(line, tft=True))))
+            strings.append((line, TFT.colour565(*tft_color)))
 
             # print(f"led {i}, dist {d}km")
         if show_end_of_lines and time() - last_button_release > 2:
@@ -451,7 +445,7 @@ def main_loop():
         led_queue.put_nowait(active_leds)
         strings += (12 - len(strings)) * [(" " * int(128 / 6), TFT.BLACK)]
 
-        TFT.put_chars("{:03d} sats<{}km      {}".format(len(nearby_sats),EQUIV_RADIUS,  "-" if oddstep else "|"),
+        TFT.put_chars("{:03d} sats<{}km      {}".format(len(nearby_sats), EQUIV_RADIUS, "-" if oddstep else "|"),
                       0, 0, TFT.WHITE, TFT.BLUE)
         oddstep = not oddstep
         dy = 10
