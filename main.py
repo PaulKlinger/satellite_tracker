@@ -8,7 +8,6 @@ from collections import defaultdict
 import os.path
 
 import numpy as np
-# from pyorbital import orbital
 from geopy import distance
 
 from orbit_np import Orbitals
@@ -123,111 +122,6 @@ class LedArray(object):
 
 
 here = (48.224708, 16.438082)  # lat long
-
-
-def pygame_demo():
-    tracker = SatTracker("3le.txt", here)
-    leds = LedArray([49.0, 32.0, 16.5, 0.0], [18, 12, 6, 1],
-                    [-np.pi / 2 + np.deg2rad(10), -np.pi / 2, -np.pi / 2 + np.deg2rad(30), 0], 200, *here, [])
-    import pygame as pg
-    pg.init()
-    white = (255, 255, 255)
-    red = (255, 0, 0)
-    black = (0, 0, 0)
-
-    disp = pg.display.set_mode((800, 800))
-    disp.fill(black)
-
-    def draw_led(disp, dlat, dlong, color):
-        pg.draw.circle(disp, color, (int(dlong * 100 + 400), int(-dlat * 100 + 400)), 10)
-
-    while True:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                pg.quit()
-                quit()
-
-        for dlat, dlong in leds.led_poss:
-            draw_led(disp, dlat, dlong, white)
-
-        nearby_sats = tracker.nearby_now()
-        nalts = []
-        for name, lat, long, alt in nearby_sats:
-            # print(f"{name}: {alt}")
-            p, i, d = leds.closest_led(lat, long)
-            # print(f"led {i}, dist {d}km")
-            draw_led(disp, p[0], p[1], red)
-            nalts.append(alt)
-
-        with open("alts.txt", "a") as f:
-            for a in nalts:
-                f.write("{:.0f}\n".format(a))
-
-        pg.display.update()
-        sleep(0.5)
-
-
-# while True:
-#
-#    for name, lat, lon, alt in nearby_sats:
-
-def oled_loop():
-    tracker = SatTracker("3le.txt", here)
-    leds = LedArray([49.0, 32.0, 16.5, 0.0], [18, 12, 6, 1],
-                    [-np.pi / 2 + np.deg2rad(10), -np.pi / 2, -np.pi / 2 + np.deg2rad(30), 0], EQUIV_RADIUS, *here, [])
-    import Adafruit_GPIO.SPI as SPI
-    import Adafruit_SSD1306
-
-    from PIL import Image
-    from PIL import ImageDraw
-    from PIL import ImageFont
-
-    # Raspberry Pi pin configuration:
-    RST = None  # on the PiOLED this pin isnt used
-    # Note the following are only used with SPI:
-    DC = 23
-    SPI_PORT = 0
-    SPI_DEVICE = 0
-    disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST)
-    disp.begin()
-
-    # Clear display.
-    disp.clear()
-    disp.display()
-    # Create blank image for drawing.
-    # Make sure to create image with mode '1' for 1-bit color.
-    width = disp.width
-    height = disp.height
-    image = Image.new('1', (width, height))
-
-    # Get drawing object to draw on image.
-    draw = ImageDraw.Draw(image)
-
-    # Draw a black filled box to clear the image.
-    draw.rectangle((0, 0, width, height), outline=0, fill=0)
-
-    # First define some constants to allow easy resizing of shapes.
-    padding = -2
-    top = padding
-    bottom = height - padding
-    # Move left to right keeping track of the current x position for drawing shapes.
-    x = 0
-
-    # Load default font.
-    font = ImageFont.load_default()
-
-    while True:
-        draw.rectangle((0, 0, width, height), outline=0, fill=0)
-        nearby_sats = tracker.nearby_now()
-        dy = 0
-        for name, lat, long, alt in nearby_sats:
-            p, i, d = leds.closest_led(lat, long)
-            draw.text((0, top + dy), name[2:] + " {}km".format(int(round(alt))), font=font, fill=255)
-            dy += 8
-            # print(f"led {i}, dist {d}km")
-        disp.image(image)
-        disp.display()
-
 
 HIGHLY_INTERESTING_CLASS = ["ISS", "TIANGONG", "DRAGON", "SOYUZ", "PROGRESS", "HST", "CYGNUS", "GP-B", "TINTIN"]
 PLANETLABS_CLASS = ["FLOCK", "DOVE"]
