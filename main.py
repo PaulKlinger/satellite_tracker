@@ -47,9 +47,6 @@ class SatTracker(object):
         print("creating orbitals")
         self.orbs = Orbitals(self.tles)
 
-    def distance(self, lat, long):
-        return np.sqrt((self.loc[0] - lat) ** 2 + ((self.loc[1] - long) * self.longfactor)**2) * 111
-
     def nearby_now(self):
         now = datetime.utcnow()
 
@@ -57,14 +54,11 @@ class SatTracker(object):
         self.last_query_t = t1
 
         lons, lats, alts, errors = self.orbs.get_lonlatalt(now)
-        valid_satpos = zip(self.satnames[~errors], lats, lons, alts)
         t2 = time()
-        # nearby = [(name, lat, lon, alt) for name, lon, lat, alt in valid_satpos if
-        #          abs(lon - self.loc[1]) < 5 and abs(lat - self.loc[0]) < 5 and distance.distance(self.loc,
-        #                                                                                          (lat, lon)).km < 200]
+        rough_near = np.logical_and(np.abs(lats - self.loc[0]) < 3, np.abs(lons - self.loc[1]) < 3)
+        valid_satpos = list(zip(self.satnames[~errors][rough_near], lats[rough_near], lons[rough_near], alts[rough_near]))
         nearby = [(name, lat, lon, alt) for name, lat, lon, alt in valid_satpos if
-                  abs(lon - self.loc[1]) < 3 and abs(lat - self.loc[0]) < 3 and self.distance(lat, lon) < 200]
-
+                   distance.distance(self.loc, (lat, lon)).km < 200]
         t3 = time()
         print("loc:{:.2f}s dist: {:.2f}s tot: {:.2f}s, sats: {:02d}".format(t2 - t1, t3 - t2, t3 - t1, len(nearby)))
 
@@ -179,7 +173,7 @@ def pygame_demo():
 def oled_loop():
     tracker = SatTracker("3le.txt", here)
     leds = LedArray([49.0, 32.0, 16.5, 0.0], [18, 12, 6, 1],
-                    [-np.pi / 2 + np.deg2rad(10), -np.pi / 2, -np.pi / 2 + np.deg2rad(30), 0], 200, *here, [])
+                    [-np.pi / 2 + np.deg2rad(10), -np.pi / 2, -np.pi / 2 + np.deg2rad(30), 0], EQUIV_RADIUS, *here, [])
     import Adafruit_GPIO.SPI as SPI
     import Adafruit_SSD1306
 
@@ -333,6 +327,7 @@ def update_tle_file():
 
 
 TARGET_STEP_TIME = 0.5  # s target delta-t between sat position updates
+EQUIV_RADIUS = 200  # km
 
 def main_loop():
     from gpiozero import Button
@@ -402,8 +397,8 @@ def main_loop():
     tracker = SatTracker(FILENAME, here)
 
     leds = LedArray([49.0, 32.0, 16.5, 0.0], [18, 12, 6, 1],
-                    [-np.pi / 2 + np.deg2rad(10), -np.pi / 2, -np.pi / 2 - np.deg2rad(30), 0], [1, -1, -1, 1], 200,
-                    *here, [500, 1000, 2500])
+                    [-np.pi / 2 + np.deg2rad(10), -np.pi / 2, -np.pi / 2 - np.deg2rad(30), 0], [1, -1, -1, 1],
+                    EQUIV_RADIUS, *here, [500, 1000, 2500])
 
     tracker.nearby_now()  # run once to remove errors
     oddstep = True
@@ -439,7 +434,7 @@ def main_loop():
         led_queue.put_nowait(active_leds)
         strings += (12 - len(strings)) * [(" " * int(128 / 6), TFT.BLACK)]
 
-        TFT.put_chars("{:03d} sats<200km      {}".format(len(nearby_sats), "-" if oddstep else "|"),
+        TFT.put_chars("{:03d} sats<{}km      {}".format(len(nearby_sats),EQUIV_RADIUS,  "-" if oddstep else "|"),
                       0, 0, TFT.WHITE, TFT.BLUE)
         oddstep = not oddstep
         dy = 10
