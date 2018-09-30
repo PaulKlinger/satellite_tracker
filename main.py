@@ -424,7 +424,7 @@ def main_loop():
         step_start_time = time()
         if datetime.now() - tle_updated_time > timedelta(days=1):
             write_message("Downloading TLEs")
-            update_tle_file()
+            tle_updated_time = update_tle_file()
             write_message("Loading Satellites")
             tracker = SatTracker("3le.txt", here)
             tracker.nearby_now()  # run once to remove errors
