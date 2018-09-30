@@ -239,6 +239,15 @@ def color_from_name(name, tft=False):
         return (255, 255, 255) if tft else (255 // 3, 255 // 3, 255 // 3)
 
 
+def priority_from_name(name):
+    if "DEB" in name:
+        return 0
+    elif "R/B" in name:
+        return 1
+    else:
+        return 2
+
+
 def run_demo(strip):
     current = chase_loop(strip, timeout=5)
     current = rings_loop(strip, current=current, timeout=5)
@@ -419,7 +428,8 @@ def main_loop():
         active_leds = {}
         for name, lat, long, alt in nearby_sats:
             _, led_id, _ = leds.closest_led(lat, long, alt)
-            active_leds[led_id] = name
+            if (led_id not in active_leds) or priority_from_name(name) > priority_from_name(active_leds[led_id]):
+                active_leds[led_id] = name
             line = name[2:] + " {}km".format(int(round(alt)))
             if show_end_of_lines:
                 line = line[-21:]
@@ -445,6 +455,7 @@ def main_loop():
         prev_strings = strings
 
         step_time = time() - step_start_time
+        print("step_time: {:.2f}s".format(step_time))
         if step_time < TARGET_STEP_TIME:
             sleep(TARGET_STEP_TIME - step_time)
 
