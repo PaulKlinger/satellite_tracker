@@ -173,8 +173,6 @@ def led_control(led_queue):
 
     set_all(strip, neopixel.Color(0, 0, 0))
 
-
-
     stepsize = 1 / 60.  # s
     switch_time = 0.5  # s
 
@@ -203,8 +201,10 @@ def led_control(led_queue):
                 sleep(0.5)
                 break
             for i in range(strip.numPixels()):
-                target[i] = message[i][1] if i in message else (0, 0, 0)
-                step[i] = tuple((t - c) / (switch_time / stepsize) for t, c in zip(target[i], current[i]))
+                newtarget = message[i][1] if i in message else (0, 0, 0)
+                if target[i] != newtarget:
+                    target[i] = newtarget
+                    step[i] = tuple((t - c) / (switch_time / stepsize) for t, c in zip(target[i], current[i]))
 
         for i in range(strip.numPixels()):
             current[i] = tuple(c + s for c, s in zip(current[i], step[i]))
