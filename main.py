@@ -11,7 +11,7 @@ import numpy as np
 from geopy import distance
 
 from orbit_np import Orbitals
-from demo import chase_loop, random_loop, rings_loop, spinning_loop
+from demo import chase_loop, random_loop, rings_loop, spinning_loop, alternate_loop
 
 
 class SatTracker(object):
@@ -121,7 +121,7 @@ class LedArray(object):
         return closest_led_pos, closest_led_index, closest_led_distance
 
 
-here = (48.224708, 16.438082)  # lat long
+HERE = (48.224708, 16.438082)  # lat long
 
 HIGHLY_INTERESTING_CLASS = ["ISS", "TIANGONG", "DRAGON", "SOYUZ", "PROGRESS", "HST", "CYGNUS", "GP-B", "TINTIN"]
 PLANETLABS_CLASS = ["FLOCK", "DOVE"]
@@ -173,12 +173,19 @@ def led_control(led_queue):
 
     set_all(strip, neopixel.Color(0, 0, 0))
 
+
+
     stepsize = 1 / 60.  # s
     switch_time = 0.5  # s
 
     current = defaultdict(lambda: (0, 0, 0))
     target = defaultdict(lambda: (0, 0, 0))
     step = defaultdict(lambda: (0, 0, 0))
+    loading_anim_process = mp.Process(target=alternate_loop, args=(strip,))
+    loading_anim_process.start()
+    m = led_queue.get()
+    loading_anim_process.terminate()
+    led_queue.put(m)  # ugly...
 
     while True:
         t0 = time()
@@ -298,11 +305,11 @@ def main_loop():
     tle_updated_time = datetime.fromtimestamp(os.path.getmtime(FILENAME))
 
     write_message("Loading Satellites")
-    tracker = SatTracker(FILENAME, here)
+    tracker = SatTracker(FILENAME, HERE)
 
     leds = LedArray([49.0, 32.0, 16.5, 0.0], [18, 12, 6, 1],
                     [-np.pi / 2 + np.deg2rad(10), -np.pi / 2, -np.pi / 2 - np.deg2rad(30), 0], [1, -1, -1, 1],
-                    EQUIV_RADIUS, *here, [500, 1000, 2500])
+                    EQUIV_RADIUS, *HERE, [500, 1000, 2500])
 
     tracker.nearby_now()  # run once to remove errors
     oddstep = True
@@ -314,7 +321,7 @@ def main_loop():
             write_message("Downloading TLEs")
             tle_updated_time = update_tle_file()
             write_message("Loading Satellites")
-            tracker = SatTracker("3le.txt", here)
+            tracker = SatTracker("3le.txt", HERE)
             tracker.nearby_now()  # run once to remove errors
 
         nearby_sats = tracker.nearby_now()

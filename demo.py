@@ -113,8 +113,8 @@ def hsl_to_rgbnorm(h, s, l):
     return (r1 + m, g1 + m, b1 + m)
 
 
-def full_color_gradient(strip, tot, saturation=1, lightness=0.5):
-    hues = np.linspace(0, 360, strip.numPixels())
+def full_color_gradient(n, tot, saturation=1, lightness=0.5):
+    hues = np.linspace(0, 360, n)
     return [np.array(hsl_to_rgbnorm(h, saturation, lightness)) * tot for h in hues]
 
 
@@ -131,7 +131,7 @@ def chase_loop(strip, step_time=0.03, timeout=None, current=None):
     brightness_gradient = [0] * (strip.numPixels() - gradient_length) + [
         int(round(i ** 2 * max_brightness / gradient_length ** 2)) for i in range(1, gradient_length + 1)]
 
-    color_gradient = full_color_gradient(strip, 100)
+    color_gradient = full_color_gradient(strip.numPixels(), 100)
     while True:
         step_t0 = time()
         current = {}
@@ -187,11 +187,11 @@ def spinning_loop(strip, step_time=0.1, timeout=None, current=None):
         int(round(i ** 2 * max_brightness / gradient_length ** 2)) for i in range(1, gradient_length + 1)] for
         gradient_length in RING_LEDNS]
 
-    color_gradient = full_color_gradient(strip, 100)
+    color_gradient = full_color_gradient(strip.numPixels(), 100)
 
     offset = 0
     while True:
-        target = defaultdict(lambda: (0, 0, 0))
+        target = {}
         for level in range(4):
             for ring_id, ring in enumerate(RINGS):
                 for led_ring_id, led_level_id in enumerate(ring):
@@ -200,6 +200,28 @@ def spinning_loop(strip, step_time=0.1, timeout=None, current=None):
                             brightness_gradients[ring_id][
                                 (led_ring_id - offset * (1 - 2 * ((ring_id + level) % 2))) % RING_LEDNS[ring_id]] *
                             color_gradient[led_id] / 100)
+        current = to_target(strip, current, target, step_time)
+
+        if timeout is not None and time() - start_time >= timeout:
+            return current
+
+        offset += 1
+
+
+def alternate_loop(strip, step_time=0.4, timeout=None, current=None):
+    if current is None:
+        set_all(strip, neopixel.Color(0, 0, 0))
+        current = defaultdict(lambda: (0, 0, 0))
+    start_time = time()
+
+    gradient_length = 10
+    color_gradient = full_color_gradient(gradient_length, 100)
+
+    offset = 0
+    while True:
+        target = {}
+        for i in range(strip.numPixels()):
+            target[i] = (i+offset)%2 * color_gradient[offset % gradient_length]
         current = to_target(strip, current, target, step_time)
 
         if timeout is not None and time() - start_time >= timeout:
