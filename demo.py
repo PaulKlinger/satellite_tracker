@@ -1,4 +1,5 @@
 import numpy as np
+import math
 import neopixel
 from time import sleep, time
 import itertools
@@ -49,7 +50,7 @@ def to_target(strip, current, target, switch_time=0.5, step_time=1 / 30.):
     for i in range(strip.numPixels()):
         step[i] = tuple((t - c) / (switch_time / step_time) for t, c in zip(target[i], current[i]))
 
-    for _ in range(int(np.ceil(switch_time / step_time))):
+    for _ in range(math.ceil(switch_time / step_time)):
         t0 = time()
         for i in range(strip.numPixels()):
             current[i] = tuple(c + s for c, s in zip(current[i], step[i]))
@@ -221,13 +222,28 @@ def alternate_loop(strip, step_time=0.4, timeout=None, current=None):
     while True:
         target = {}
         for i in range(strip.numPixels()):
-            target[i] = (i+offset)%2 * color_gradient[offset % gradient_length]
+            target[i] = (i + offset) % 2 * color_gradient[offset % gradient_length]
         current = to_target(strip, current, target, step_time)
 
         if timeout is not None and time() - start_time >= timeout:
             return current
 
         offset += 1
+
+
+def half_loop(strip, step_time=0.5, color=(0, 100, 0), timeout=None, current=None):
+    if current is None:
+        set_all(strip, neopixel.Color(0, 0, 0))
+        current = defaultdict(lambda: (0, 0, 0))
+    start_time = time()
+    active_leds = [False] * math.ceil(strip.numPixels()) + [True] * math.floor(strip.numPixels())
+    while True:
+        shuffle(active_leds)
+        target = {i: color if a else (0, 0, 0) for i, a in enumerate(active_leds)}
+        current = to_target(strip, current, target, step_time)
+
+        if timeout is not None and time() - start_time >= timeout:
+            return current
 
 
 def init():

@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from time import time, sleep
 import itertools
 import multiprocessing as mp
+from ctypes import c_bool
 import subprocess
 import queue
 from collections import defaultdict
@@ -11,7 +12,7 @@ import numpy as np
 from geopy import distance
 
 from orbit_np import Orbitals
-from demo import chase_loop, random_loop, rings_loop, spinning_loop, alternate_loop
+from demo import chase_loop, random_loop, rings_loop, spinning_loop, alternate_loop, half_loop
 
 
 class SatTracker(object):
@@ -141,14 +142,31 @@ def color_priority_from_name(name):
             return tftc_prio_ledc
 
 
-def run_demo(strip):
-    current = chase_loop(strip, timeout=5)
-    current = spinning_loop(strip, current=current, timeout=5)
-    current = rings_loop(strip, current=current, timeout=5)
-    current = random_loop(strip, current=current, timeout=5)
+def run_demo(strip, led_queue):
+    current = None
+    for demo in (chase_loop, spinning_loop, rings_loop, random_loop):
+        print("demo: {}".format(demo))
+        p = mp.Process(target=demo, kwargs={"strip": strip,})
+        p.start()
+        sleep(5)  # show each demo for 5s
+        while True:
+            # get messages, ignore satellite updates that might still be in the queue
+            try:
+                m = led_queue.get_nowait()
+                if m == "BUTTON":  # if the button is pressed we stay in the demo
+                    while True:
+                        m = led_queue.get()
+                        if m == "BUTTON":  # if the button is pressed again we exit
+                            p.terminate()
+                            return
+            except queue.Empty:
+                # if there was no button press move on to the next demo
+                p.terminate()
+                break
 
 
-def led_control(led_queue):
+
+def led_control(led_queue, demo_mode):
     import neopixel
 
     LED_COUNT = 37 * 4  # Number of LED pixels.
@@ -179,7 +197,7 @@ def led_control(led_queue):
     current = defaultdict(lambda: (0, 0, 0))
     target = defaultdict(lambda: (0, 0, 0))
     step = defaultdict(lambda: (0, 0, 0))
-    loading_anim_process = mp.Process(target=alternate_loop, args=(strip,))
+    loading_anim_process = mp.Process(target=half_loop, args=(strip,))
     loading_anim_process.start()
     m = led_queue.get()
     loading_anim_process.terminate()
@@ -193,7 +211,14 @@ def led_control(led_queue):
             pass
         else:
             if message == "DEMO":
-                run_demo(strip)
+                print("got demo message")
+                demo_mode.acquire()
+                print("acquired demo lock")
+                run_demo(strip, led_queue)
+                demo_mode.release()
+                continue
+            elif message == "BUTTON":
+                # pressed the button too late to stay in demo mode, just ignore
                 continue
 
             elif message is None:
@@ -245,8 +270,9 @@ def main_loop():
     from subprocess import check_call
 
     led_queue = mp.Queue()
+    demo_mode = mp.Lock()
 
-    led_process = mp.Process(target=led_control, args=(led_queue,))
+    led_process = mp.Process(target=led_control, args=(led_queue, demo_mode,))
     led_process.start()
 
     shutting_down = False
@@ -265,10 +291,13 @@ def main_loop():
         nonlocal last_button_release, show_end_of_lines
         if time() - last_button_release < 1:
             led_queue.put_nowait("DEMO")
-            sleep(10)
         else:
-            show_end_of_lines = True
-            last_button_release = time()
+            if not demo_mode.acquire(block=False):
+                led_queue.put("BUTTON")
+            else:
+                demo_mode.release()
+                show_end_of_lines = True
+                last_button_release = time()
 
     the_btn = Button(3, hold_time=2, bounce_time=0.05)
     the_btn.when_held = shutdown
@@ -293,7 +322,7 @@ def main_loop():
 
     def write_message(message):
         TFT.clear_display(TFT.BLACK)
-        TFT.put_string(message, 0, 0, TFT.WHITE, TFT.BLACK)
+        TFT.put_string(message, 0, 0, TFT.WHITE, TFT.BLACK, font=3)
 
     TFT.clear_display(TFT.BLACK)
 
@@ -304,7 +333,7 @@ def main_loop():
         update_tle_file()
     tle_updated_time = datetime.fromtimestamp(os.path.getmtime(FILENAME))
 
-    write_message("Loading Satellites")
+    write_message("Calculating satellite orbits")
     tracker = SatTracker(FILENAME, HERE)
 
     leds = LedArray([49.0, 32.0, 16.5, 0.0], [18, 12, 6, 1],
@@ -316,6 +345,11 @@ def main_loop():
     show_end_of_lines = False
     prev_strings = 12 * [(" " * int(128 / 6), TFT.BLACK)]
     while True:
+        if not demo_mode.acquire(block=False):
+            write_message("Showing off :D")
+            demo_mode.acquire()
+        demo_mode.release()
+
         step_start_time = time()
         if datetime.now() - tle_updated_time > timedelta(days=1):
             write_message("Downloading TLEs")
