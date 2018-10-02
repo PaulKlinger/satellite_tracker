@@ -333,7 +333,7 @@ def main_loop():
         update_tle_file()
     tle_updated_time = datetime.fromtimestamp(os.path.getmtime(FILENAME))
 
-    write_message("Calculating satellite orbits")
+    write_message("Loading Satellites")
     tracker = SatTracker(FILENAME, HERE)
 
     leds = LedArray([49.0, 32.0, 16.5, 0.0], [18, 12, 6, 1],

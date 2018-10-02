@@ -149,8 +149,9 @@ def chase_loop(strip, step_time=0.03, timeout=None, current=None):
 
 
 RING_LEDNS = [1, 6, 12, 18]
-RINGS = [[18 + 12 + 6], range(18 + 12, 18 + 12 + 6), range(18, 18 + 12), range(18)]
+RINGS = [[18 + 12 + 6], range(18 + 12, 18 + 12 + 6), range(18, 18 + 12), range(17, -1, -1)]
 LEVEL_LEDN = sum(RING_LEDNS)
+RING_DIRECTIONS = [1, -1, -1, -1]
 
 
 def rings_loop(strip, step_time=0.25, timeout=None, current=None):
@@ -195,11 +196,13 @@ def spinning_loop(strip, step_time=0.1, timeout=None, current=None):
         target = {}
         for level in range(4):
             for ring_id, ring in enumerate(RINGS):
+                direction = (1 - 2 * ((ring_id + level) % 2))
                 for led_ring_id, led_level_id in enumerate(ring):
                     led_id = led_level_id + level * LEVEL_LEDN
                     target[led_id] = (
                             brightness_gradients[ring_id][
-                                (led_ring_id - offset * (1 - 2 * ((ring_id + level) % 2))) % RING_LEDNS[ring_id]] *
+                                ((led_ring_id - direction * offset) * direction) %
+                                RING_LEDNS[ring_id]] *
                             color_gradient[led_id] / 100)
         current = to_target(strip, current, target, step_time)
 
