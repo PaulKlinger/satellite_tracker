@@ -343,10 +343,12 @@ def main_loop():
     tracker.nearby_now()  # run once to remove errors
     oddstep = True
     show_end_of_lines = False
-    prev_strings = 12 * [(" " * int(128 / 6), TFT.BLACK)]
+    all_empty_strings = 12 * [(" " * int(128 / 6), TFT.BLACK)]
+    prev_strings = all_empty_strings
     while True:
         if not demo_mode.acquire(block=False):
             write_message("Showing off :D")
+            prev_strings = all_empty_strings
             demo_mode.acquire()
         demo_mode.release()
 
@@ -357,6 +359,8 @@ def main_loop():
             write_message("Loading Satellites")
             tracker = SatTracker("3le.txt", HERE)
             tracker.nearby_now()  # run once to remove errors
+
+            prev_strings = all_empty_strings
 
         nearby_sats = tracker.nearby_now()
 
