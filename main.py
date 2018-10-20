@@ -13,6 +13,7 @@ from geopy import distance
 
 from orbit_np import Orbitals
 from demo import chase_loop, random_loop, rings_loop, spinning_loop, alternate_loop, half_loop
+from credentials import SPACETRACK_PASSWD, SPACETRACK_USER
 
 
 class SatTracker(object):
@@ -253,10 +254,10 @@ def update_tle_file():
     # TODO: add error handling...
     subprocess.run(
         ("curl https://www.space-track.org/ajaxauth/login -d"
-         "'identity=***REMOVED***&password=***REMOVED***"
+         "'identity={}&password={}"
          "&query=https://www.space-track.org/basicspacedata/query/"
          "class/tle_latest/ORDINAL/1/EPOCH/%3Enow-30/orderby/NORAD_CAT_ID/format/3le'"
-         "> 3le.txt"),
+         "> 3le.txt").format(SPACETRACK_USER, SPACETRACK_PASSWD),
         shell=True)
     return datetime.now()
 
