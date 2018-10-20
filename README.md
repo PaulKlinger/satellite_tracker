@@ -5,3 +5,7 @@ The orbit_np.py file is a modified version of [pyorbital](https://github.com/pyt
 (it calculates the orbits of multiple satellites at the same to increase performance).
 
 Requires https://github.com/PaulKlinger/LIBtft144 and https://github.com/jgarff/rpi_ws281x + a bunch of libraries from PyPi.
+
+The PCB design for the LED boards is in the PCBs folder. Note that it has a horrible design flaw:
+Because of the positioning of the connections on each side the cables in the pillars have to cross over on each level,
+making the assembly extremely frustrating
