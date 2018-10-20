@@ -1,3 +1,9 @@
+# modified version of https://github.com/pytroll/pyorbital
+# licensed under GPL 3.0
+# this version calculates orbitals for multiple satellites at the same time, keeping track of the ones that give errors
+# this increases performance massively when calculating 1000s of orbits
+
+
 import numpy as np
 from datetime import datetime, timedelta
 
