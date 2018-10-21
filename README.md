@@ -8,4 +8,8 @@ Requires https://github.com/PaulKlinger/LIBtft144 and https://github.com/jgarff/
 
 The PCB design for the LED boards is in the PCBs folder. Note that it has a horrible design flaw:
 Because of the positioning of the connections on each side the cables in the pillars have to cross over on each level,
-making the assembly extremely frustrating
+making the assembly extremely frustrating.
+
+The STLs and Fusion 360 source for the 3d printed parts are in the "3D printed parts" folder.
+I'd strongly recommend that anyone who builds this uses threaded rods through the pillars instead of the million screws
+I used. (I just didn't have any rods and wanted to build it right away.)
