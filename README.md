@@ -1,3 +1,5 @@
+[![](http://img.youtube.com/vi/Xof4bjcwHAY/0.jpg)](http://www.youtube.com/watch?v=Xof4bjcwHAY "Project video")
+
 This is the code and hardware design for my [Satellite tracker](https://www.reddit.com/r/space/comments/9py5qd/i_made_a_thingy_that_shows_satellites_and_space/).
 It's in an extremely rough state...
 
