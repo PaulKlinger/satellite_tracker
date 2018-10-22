@@ -4,7 +4,7 @@ import itertools
 import multiprocessing as mp
 import subprocess
 import queue
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 import os.path
 
 from subprocess import check_call
@@ -21,13 +21,17 @@ from orbit_np import Orbitals
 from demo import chase_loop, random_loop, rings_loop, spinning_loop, alternate_loop, half_loop
 from credentials import SPACETRACK_PASSWD, SPACETRACK_USER
 
+Pos = namedtuple("Pos", "lat long")
 
 # Constants determining device behavior
-CENTER_LOCATION = (48.224708, 16.438082)  # lat long
+CENTER_LOCATION = Pos(lat=48.224708, long=16.438082)
 TARGET_STEP_TIME = 0.5  # s target delta-t between sat position updates
 EQUIV_RADIUS = 200  # km
 LED_STEP_TIME = 1 / 60.  # s
 LED_SWITCH_TIME = 0.5  # s
+# sats lower than the first entry will be displayed in the lowest ring,
+# those between the first and second in the second ring, and so on
+UPPER_LEVELS_ALT_LOWER_BOUNDARIES = [500, 1000, 2500]
 # --------------------------------------------------------------
 
 
@@ -64,6 +68,13 @@ CLASS_COLORS_PRIORITIES = [  # [substring, substring,...]: (tft_color, priority,
 ]
 # --------------------------------------------------------------
 
+
+# constants describing the arrangement of the LEDs
+RING_RADII = [49.0, 32.0, 16.5, 0.0]
+RING_LEDNS = [18, 12, 6, 1]
+RING_STARTANGLES = [-np.pi / 2 + np.deg2rad(10), -np.pi / 2, -np.pi / 2 - np.deg2rad(30), 0]
+RING_DIRS = [1, -1, -1, 1]  # I connected the LEDs in the first ring in the opposite direction for some reason...
+# --------------------------------------------------------------
 
 # constants related to the WS2812B LEDs
 LED_COUNT = 37 * 4  # Number of LED pixels.
@@ -361,9 +372,10 @@ def main_loop():
     write_message("Loading Satellites")
     tracker = SatTracker(TLE_FILENAME, CENTER_LOCATION)
 
-    leds = LedArray([49.0, 32.0, 16.5, 0.0], [18, 12, 6, 1],
-                    [-np.pi / 2 + np.deg2rad(10), -np.pi / 2, -np.pi / 2 - np.deg2rad(30), 0], [1, -1, -1, 1],
-                    EQUIV_RADIUS, *CENTER_LOCATION, [500, 1000, 2500])
+    leds = LedArray(ring_radii=RING_RADII, ring_ledns=RING_LEDNS, ring_startangles=RING_STARTANGLES,
+                    ring_dirs=RING_DIRS, eq_radius=EQUIV_RADIUS,
+                    lat=CENTER_LOCATION.lat, long=CENTER_LOCATION.long,
+                    upper_levels_alt_lower_boundaries=UPPER_LEVELS_ALT_LOWER_BOUNDARIES)
 
     tracker.nearby_now()  # run once to remove errors
     oddstep = True
