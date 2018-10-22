@@ -4,7 +4,7 @@ This is the code and hardware design for my [Satellite tracker](https://www.redd
 It's in an extremely rough state...
 
 The orbit_np.py file is a modified version of [pyorbital](https://github.com/pytroll/pyorbital)
-(it calculates the orbits of multiple satellites at the same to increase performance).
+(it calculates the orbits of all the satellites at the same time to increase performance).
 
 Requires https://github.com/PaulKlinger/LIBtft144 and https://github.com/jgarff/rpi_ws281x + a bunch of libraries from PyPi.
 
