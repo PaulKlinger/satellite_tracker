@@ -70,7 +70,7 @@ CLASS_COLORS_PRIORITIES = [  # [substring, substring,...]: (tft_color, priority,
 
 
 # constants describing the arrangement of the LEDs
-RING_RADII = [49.0, 32.0, 16.5, 0.0]
+RING_RADII = [47.5, 32.0, 16.5, 0.0]
 RING_LEDNS = [18, 12, 6, 1]
 RING_STARTANGLES = [-np.pi / 2 + np.deg2rad(10), -np.pi / 2, -np.pi / 2 - np.deg2rad(30), 0]
 RING_DIRS = [1, -1, -1, 1]  # I connected the LEDs in the first ring in the opposite direction for some reason...
