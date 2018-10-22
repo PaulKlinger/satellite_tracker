@@ -2,18 +2,88 @@ from datetime import datetime, timedelta
 from time import time, sleep
 import itertools
 import multiprocessing as mp
-from ctypes import c_bool
 import subprocess
 import queue
 from collections import defaultdict
 import os.path
 
+from subprocess import check_call
+
 import numpy as np
 from geopy import distance
+import neopixel
+from gpiozero import Button
+import RPi.GPIO as GPIO
+from LIBtft144.lib_tft144 import TFT144
+import spidev
 
 from orbit_np import Orbitals
 from demo import chase_loop, random_loop, rings_loop, spinning_loop, alternate_loop, half_loop
 from credentials import SPACETRACK_PASSWD, SPACETRACK_USER
+
+
+# Constants determining device behavior
+CENTER_LOCATION = (48.224708, 16.438082)  # lat long
+TARGET_STEP_TIME = 0.5  # s target delta-t between sat position updates
+EQUIV_RADIUS = 200  # km
+LED_STEP_TIME = 1 / 60.  # s
+LED_SWITCH_TIME = 0.5  # s
+# --------------------------------------------------------------
+
+
+# TLE constants
+SPACETRACK_URL = ("https://www.space-track.org/ajaxauth/login -d"
+                  "'identity={}&password={}"
+                  "&query=https://www.space-track.org/basicspacedata/query/"
+                  "class/tle_latest/ORDINAL/1/EPOCH/%3Enow-30/orderby/NORAD_CAT_ID/format/3le'"
+                  ).format(SPACETRACK_USER, SPACETRACK_PASSWD)
+TLE_FILENAME = "3le.txt"
+# --------------------------------------------------------------
+
+
+# Satellite categorization constants
+
+# - if multiple sats would be displayed on the same led the one with the higher
+#   priority wins
+#
+# - tft shows colors a bit differently than leds, so define separate
+#   satellite names
+#
+# - Satellite names are compared against all the substrings in order.
+#   If one matches the satellite is in that class.
+
+HIGHLY_INTERESTING_CLASS = ["ISS", "TIANGONG", "DRAGON", "SOYUZ", "PROGRESS", "HST", "CYGNUS", "GP-B", "TINTIN"]
+PLANETLABS_CLASS = ["FLOCK", "DOVE"]
+
+CLASS_COLORS_PRIORITIES = [  # [substring, substring,...]: (tft_color, priority, led_color)
+    (["DEB"], ((255, 0, 0), 0, (255, 0, 0))),
+    (["R/B"], ((255, 90, 0), 1, (188, 86, 0))),
+    (PLANETLABS_CLASS, ((0, 0, 255), 2, (0, 0, 255))),
+    (HIGHLY_INTERESTING_CLASS, ((0, 255, 0), 10, (0, 255, 0))),
+    ([""], ((255, 255, 255), 2, (255 // 3, 255 // 3, 255 // 3))),  # wildcard
+]
+# --------------------------------------------------------------
+
+
+# constants related to the WS2812B LEDs
+LED_COUNT = 37 * 4  # Number of LED pixels.
+LED_PIN = 18  # GPIO pin connected to the pixels (18 uses PWM!).
+# LED_PIN        = 10      # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
+LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
+LED_DMA = 11  # DMA channel to use for generating signal (try 10)
+LED_BRIGHTNESS = 50  # Set to 0 for darkest and 255 for brightest
+LED_INVERT = False  # True to invert the signal (when using NPN transistor level shift)
+LED_CHANNEL = 0  # set to '1' for GPIOs 13, 19, 41, 45 or 53
+# --------------------------------------------------------------
+
+
+# constants related to the spi tft display
+# Don't forget the other 2 SPI pins SCK and MOSI (SDA)
+TFT_RST = 23
+TFT_CE = 0  # 0 or 1 for CE0 / CE1 number (NOT the pin#)
+TFT_DC = 22  # Labeled on board as "A0"
+TFT_LED = 24  # LED backlight sinks 10-14 mA @ 3V
+# --------------------------------------------------------------
 
 
 class SatTracker(object):
@@ -24,12 +94,12 @@ class SatTracker(object):
         satnames = []
 
         with open(tlefile) as f:
+            n = 0
             while True:
+                n += 1
                 satname = f.readline().strip()
                 if not satname:
-                    print(satname)
-                    print(line1)
-                    print("-----")
+                    print("{} sats".format(n))
                     break
                 line1 = f.readline().strip()
                 line2 = f.readline().strip()
@@ -123,19 +193,6 @@ class LedArray(object):
         return closest_led_pos, closest_led_index, closest_led_distance
 
 
-HERE = (48.224708, 16.438082)  # lat long
-
-HIGHLY_INTERESTING_CLASS = ["ISS", "TIANGONG", "DRAGON", "SOYUZ", "PROGRESS", "HST", "CYGNUS", "GP-B", "TINTIN"]
-PLANETLABS_CLASS = ["FLOCK", "DOVE"]
-
-CLASS_COLORS_PRIORITIES = [  # [substring, substring,...]: (tft_color, priority, led_color)
-    (["DEB"], ((255, 0, 0), 0, (255, 0, 0))),
-    (["R/B"], ((255, 90, 0), 1, (188, 86, 0))),
-    (PLANETLABS_CLASS, ((0, 0, 255), 2, (0, 0, 255))),
-    (HIGHLY_INTERESTING_CLASS, ((0, 255, 0), 10, (0, 255, 0))),
-    ([""], ((255, 255, 255), 2, (255 // 3, 255 // 3, 255 // 3))),  # wildcard
-]
-
 
 def color_priority_from_name(name):
     for c, tftc_prio_ledc in CLASS_COLORS_PRIORITIES:
@@ -144,7 +201,6 @@ def color_priority_from_name(name):
 
 
 def run_demo(strip, led_queue):
-    current = None
     for demo in (chase_loop, spinning_loop, rings_loop, random_loop):
         print("demo: {}".format(demo))
         p = mp.Process(target=demo, kwargs={"strip": strip,})
@@ -166,18 +222,8 @@ def run_demo(strip, led_queue):
                 break
 
 
-
 def led_control(led_queue, demo_mode):
-    import neopixel
 
-    LED_COUNT = 37 * 4  # Number of LED pixels.
-    LED_PIN = 18  # GPIO pin connected to the pixels (18 uses PWM!).
-    # LED_PIN        = 10      # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
-    LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
-    LED_DMA = 11  # DMA channel to use for generating signal (try 10)
-    LED_BRIGHTNESS = 50  # Set to 0 for darkest and 255 for brightest
-    LED_INVERT = False  # True to invert the signal (when using NPN transistor level shift)
-    LED_CHANNEL = 0  # set to '1' for GPIOs 13, 19, 41, 45 or 53
     strip = neopixel.Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA,
                                        LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL,
                                        strip_type=neopixel.ws.WS2811_STRIP_GRB)
@@ -191,9 +237,6 @@ def led_control(led_queue, demo_mode):
         strip.show()
 
     set_all(strip, neopixel.Color(0, 0, 0))
-
-    stepsize = 1 / 60.  # s
-    switch_time = 0.5  # s
 
     current = defaultdict(lambda: (0, 0, 0))
     target = defaultdict(lambda: (0, 0, 0))
@@ -230,7 +273,7 @@ def led_control(led_queue, demo_mode):
                 newtarget = message[i][1] if i in message else (0, 0, 0)
                 if target[i] != newtarget:
                     target[i] = newtarget
-                    step[i] = tuple((t - c) / (switch_time / stepsize) for t, c in zip(target[i], current[i]))
+                    step[i] = tuple((t - c) / (LED_SWITCH_TIME / LED_STEP_TIME) for t, c in zip(target[i], current[i]))
 
         for i in range(strip.numPixels()):
             current[i] = tuple(c + s for c, s in zip(current[i], step[i]))
@@ -246,30 +289,26 @@ def led_control(led_queue, demo_mode):
 
         strip.show()
         t1 = time()
-        if t1 - t0 < stepsize:
-            sleep(stepsize - (t1 - t0))
+        if t1 - t0 < LED_STEP_TIME:
+            sleep(LED_STEP_TIME - (t1 - t0))
 
 
 def update_tle_file():
     # TODO: add error handling...
     subprocess.run(
-        ("curl https://www.space-track.org/ajaxauth/login -d"
-         "'identity={}&password={}"
-         "&query=https://www.space-track.org/basicspacedata/query/"
-         "class/tle_latest/ORDINAL/1/EPOCH/%3Enow-30/orderby/NORAD_CAT_ID/format/3le'"
-         "> 3le.txt").format(SPACETRACK_USER, SPACETRACK_PASSWD),
+        "curl {} > {}".format(SPACETRACK_URL, TLE_FILENAME),
         shell=True)
     return datetime.now()
 
 
-TARGET_STEP_TIME = 0.5  # s target delta-t between sat position updates
-EQUIV_RADIUS = 200  # km
+def init_tft():
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
+
+    return TFT144(GPIO, spidev.SpiDev(), TFT_CE, TFT_DC, TFT_RST, TFT_LED, isRedBoard=True, spi_speed=16000000)
 
 
 def main_loop():
-    from gpiozero import Button
-    from subprocess import check_call
-
     led_queue = mp.Queue()
     demo_mode = mp.Lock()
 
@@ -305,21 +344,7 @@ def main_loop():
     last_button_release = 0
     the_btn.when_released = button_pressed
 
-    import RPi.GPIO as GPIO
-    from LIBtft144.lib_tft144 import TFT144
-    import spidev
-
-    GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BCM)
-
-    RST = 23
-    CE = 0  # 0 or 1 for CE0 / CE1 number (NOT the pin#)
-    DC = 22  # Labeled on board as "A0"
-    LED = 24  # LED backlight sinks 10-14 mA @ 3V
-
-    # Don't forget the other 2 SPI pins SCK and MOSI (SDA)
-
-    TFT = TFT144(GPIO, spidev.SpiDev(), CE, DC, RST, LED, isRedBoard=True, spi_speed=16000000)
+    TFT = init_tft()
 
     def write_message(message):
         TFT.clear_display(TFT.BLACK)
@@ -327,19 +352,18 @@ def main_loop():
 
     TFT.clear_display(TFT.BLACK)
 
-    FILENAME = "3le.txt"
-    if (not os.path.isfile(FILENAME)) or \
-            (datetime.now() - datetime.fromtimestamp(os.path.getmtime(FILENAME))) > timedelta(days=1):
+    if (not os.path.isfile(TLE_FILENAME)) or \
+            (datetime.now() - datetime.fromtimestamp(os.path.getmtime(TLE_FILENAME))) > timedelta(days=1):
         write_message("Downloading TLEs")
         update_tle_file()
-    tle_updated_time = datetime.fromtimestamp(os.path.getmtime(FILENAME))
+    tle_updated_time = datetime.fromtimestamp(os.path.getmtime(TLE_FILENAME))
 
     write_message("Loading Satellites")
-    tracker = SatTracker(FILENAME, HERE)
+    tracker = SatTracker(TLE_FILENAME, CENTER_LOCATION)
 
     leds = LedArray([49.0, 32.0, 16.5, 0.0], [18, 12, 6, 1],
                     [-np.pi / 2 + np.deg2rad(10), -np.pi / 2, -np.pi / 2 - np.deg2rad(30), 0], [1, -1, -1, 1],
-                    EQUIV_RADIUS, *HERE, [500, 1000, 2500])
+                    EQUIV_RADIUS, *CENTER_LOCATION, [500, 1000, 2500])
 
     tracker.nearby_now()  # run once to remove errors
     oddstep = True
@@ -358,7 +382,7 @@ def main_loop():
             write_message("Downloading TLEs")
             tle_updated_time = update_tle_file()
             write_message("Loading Satellites")
-            tracker = SatTracker("3le.txt", HERE)
+            tracker = SatTracker("3le.txt", CENTER_LOCATION)
             tracker.nearby_now()  # run once to remove errors
 
             prev_strings = all_empty_strings
@@ -378,7 +402,6 @@ def main_loop():
             line = line[:21] + max(21 - len(line), 0) * " "  # trim to display length and pad
             strings.append((line, TFT.colour565(*tft_color)))
 
-            # print(f"led {i}, dist {d}km")
         if show_end_of_lines and time() - last_button_release > 2:
             show_end_of_lines = False
         if shutting_down:
@@ -404,4 +427,3 @@ def main_loop():
 
 if __name__ == "__main__":
     main_loop()
-    # pygame_demo()
