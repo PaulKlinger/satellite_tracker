@@ -6,6 +6,7 @@ import subprocess
 import queue
 from collections import defaultdict, namedtuple
 import os.path
+import sys
 
 from subprocess import check_call
 
@@ -110,7 +111,14 @@ class SatTracker(object):
                 n += 1
                 satname = f.readline().strip()
                 if not satname:
-                    print("{} sats".format(n))
+                    # there should be exactly one empty line at the end of the TLE file
+                    # check if we are at the end of the file after reading it
+                    if f.read(1) != "":  # at the end file.read returns ""
+                        # if we are not at the end, something is wrong -> abort
+                        print("unexpected empty line in TLE file")
+                        sys.exit()
+
+                    print("Loaded {} sats.".format(n))
                     break
                 line1 = f.readline().strip()
                 line2 = f.readline().strip()
