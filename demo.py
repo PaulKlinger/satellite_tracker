@@ -6,6 +6,8 @@ import itertools
 from random import randint, shuffle
 from collections import defaultdict
 
+from constants import RING_LEDNS, LEVEL_LEDN, RING_LED_INDICES
+
 
 def set_all(strip, color, show=True):
     for i in range(strip.numPixels()):
@@ -148,12 +150,6 @@ def chase_loop(strip, step_time=0.03, timeout=None, current=None):
         offset += 1
 
 
-RING_LEDNS = [1, 6, 12, 18]
-RINGS = [[18 + 12 + 6], range(18 + 12, 18 + 12 + 6), range(18, 18 + 12), range(17, -1, -1)]
-LEVEL_LEDN = sum(RING_LEDNS)
-RING_DIRECTIONS = [1, -1, -1, -1]
-
-
 def rings_loop(strip, step_time=0.25, timeout=None, current=None):
     if current is None:
         set_all(strip, neopixel.Color(0, 0, 0))
@@ -167,7 +163,7 @@ def rings_loop(strip, step_time=0.25, timeout=None, current=None):
     while True:
         target = defaultdict(lambda: (0, 0, 0))
         for level in range(4):
-            for ringid, ring in enumerate(RINGS):
+            for ringid, ring in enumerate(RING_LED_INDICES):
                 for l in ring:
                     target[l + level * LEVEL_LEDN] = colors[(level + offset + ringid) % (4 * 4)]
         current = to_target(strip, current, target, step_time)
@@ -187,7 +183,7 @@ def spinning_loop(strip, step_time=0.1, timeout=None, current=None):
     max_brightness = 255
     brightness_gradients = [[
         int(round(i ** 2 * max_brightness / gradient_length ** 2)) for i in range(1, gradient_length + 1)] for
-        gradient_length in RING_LEDNS]
+        gradient_length in reversed(RING_LEDNS)]
 
     color_gradient = full_color_gradient(strip.numPixels(), 100)
 
@@ -195,14 +191,14 @@ def spinning_loop(strip, step_time=0.1, timeout=None, current=None):
     while True:
         target = {}
         for level in range(4):
-            for ring_id, ring in enumerate(RINGS):
+            for ring_id, ring in enumerate(RING_LED_INDICES):
                 direction = (1 - 2 * ((ring_id + level) % 2))
                 for led_ring_id, led_level_id in enumerate(ring):
                     led_id = led_level_id + level * LEVEL_LEDN
                     target[led_id] = (
                             brightness_gradients[ring_id][
                                 ((led_ring_id - direction * offset) * direction) %
-                                RING_LEDNS[ring_id]] *
+                                RING_LEDNS[::-1][ring_id]] *
                             color_gradient[led_id] / 100)
         current = to_target(strip, current, target, step_time)
 
@@ -250,28 +246,15 @@ def half_loop(strip, step_time=0.5, color=(0, 100, 0), timeout=None, current=Non
 
 
 def init():
-    from main import LedArray
-    LED_COUNT = 37 * 4  # Number of LED pixels.
-    LED_PIN = 18  # GPIO pin connected to the pixels (18 uses PWM!).
-    # LED_PIN        = 10      # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
-    LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
-    LED_DMA = 11  # DMA channel to use for generating signal (try 10)
-    LED_BRIGHTNESS = 50  # Set to 0 for darkest and 255 for brightest
-    LED_INVERT = False  # True to invert the signal (when using NPN transistor level shift)
-    LED_CHANNEL = 0  # set to '1' for GPIOs 13, 19, 41, 45 or 53
-    strip = neopixel.Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA,
-                                       LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL,
-                                       strip_type=neopixel.ws.WS2811_STRIP_GRB)
+    from main import led_strip_from_constants, led_array_from_constants
+
+    strip = led_strip_from_constants()
 
     # Intialize the library (must be called once before other functions).
     strip.begin()
     set_all(strip, neopixel.Color(0, 0, 0))
 
-    here = (48.224708, 16.438082)  # lat long
-
-    leds = LedArray([49.0, 32.0, 16.5, 0.0], [18, 12, 6, 1],
-                    [-np.pi / 2 + np.deg2rad(10), -np.pi / 2, -np.pi / 2 - np.deg2rad(30), 0], [1, -1, -1, 1], 200,
-                    *here, [500, 1000, 2500])
+    leds = led_array_from_constants()
 
     return strip, leds
 
@@ -283,4 +266,6 @@ if __name__ == "__main__":
         current = spinning_loop(strip, timeout=5, current=current)
         current = rings_loop(strip, timeout=5, current=current)
         current = chase_loop(strip, timeout=5, current=current)
+        current = half_loop(strip, timeout=5, current=current)
+        current = alternate_loop(strip, timeout=5, current=current)
         current = random_loop(strip, timeout=5, current=current)
