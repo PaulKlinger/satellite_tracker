@@ -6,6 +6,7 @@ import subprocess
 import queue
 from collections import defaultdict, namedtuple
 import os.path
+from typing import List, Tuple
 
 from subprocess import check_call
 
@@ -94,10 +95,12 @@ TFT_RST = 23
 TFT_CE = 0  # 0 or 1 for CE0 / CE1 number (NOT the pin#)
 TFT_DC = 22  # Labeled on board as "A0"
 TFT_LED = 24  # LED backlight sinks 10-14 mA @ 3V
+
+
 # --------------------------------------------------------------
 
 
-class SatTracker(object):
+class NearbySatFinder(object):
     def __init__(self, tlefile: str, loc: Pos):
         self.loc = loc
         self.longfactor = np.cos(np.deg2rad(loc.lat))
@@ -219,7 +222,7 @@ def color_priority_from_name(name):
 def run_demo(strip, led_queue):
     for demo in (chase_loop, spinning_loop, rings_loop, random_loop):
         print("demo: {}".format(demo))
-        p = mp.Process(target=demo, kwargs={"strip": strip,})
+        p = mp.Process(target=demo, kwargs={"strip": strip, })
         p.start()
         sleep(5)  # show each demo for 5s
         while True:
@@ -238,8 +241,7 @@ def run_demo(strip, led_queue):
                 break
 
 
-def led_control(led_queue, demo_mode):
-
+def led_control(led_queue: mp.Queue, demo_mode: mp.Lock):
     strip = neopixel.Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA,
                                        LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL,
                                        strip_type=neopixel.ws.WS2811_STRIP_GRB)
@@ -317,130 +319,161 @@ def update_tle_file():
     return datetime.now()
 
 
-def init_tft():
-    GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BCM)
+class SattrackerTFT(object):
+    num_lines = 12
+    num_chars = int(128 / 6)
 
-    return TFT144(GPIO, spidev.SpiDev(), TFT_CE, TFT_DC, TFT_RST, TFT_LED, isRedBoard=True, spi_speed=16000000)
+    BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
+    BLUE = (0, 0, 255)
+
+    def __init__(self):
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+
+        self._tft = TFT144(GPIO, spidev.SpiDev(), TFT_CE, TFT_DC, TFT_RST, TFT_LED, isRedBoard=True, spi_speed=16000000)
+
+        self._prev_lines = self.num_lines * [(None, None, None)]
+
+    def write_message(self, message: str):
+        self.clear()
+        self._tft.put_string(message, 0, 0, self._tft.WHITE, self._tft.BLACK, font=3)
+        self._prev_lines = self.num_lines * [(None, None, None)]
+
+    def clear(self, color=None):
+        if color is None:
+            color = self._tft.BLACK
+        self._tft.clear_display(color)
+
+    def write_lines(self, lines):
+        lines += (self.num_lines - len(lines)) * [(" " * self.num_chars, self.BLACK, self.BLACK)]
+        dy = 0
+        for ((new_text, new_colorfg, new_colorbg),
+             (prev_text, prev_colorfg, prev_colorbg)) in zip(lines, self._prev_lines):
+
+            if new_text != prev_text or new_colorfg != prev_colorfg or new_colorbg != prev_colorbg:
+                self._tft.put_chars(new_text, 0, dy,
+                                    self._tft.colour565(*new_colorfg),
+                                    self._tft.colour565(*new_colorbg))  # std font 3 (default)
+            dy += 10
+
+        self._prev_lines = lines
 
 
-def main_loop():
-    led_queue = mp.Queue()
-    demo_mode = mp.Lock()
+class SatTracker(object):
+    def __init__(self):
+        self.led_queue = mp.Queue()
+        self.demo_mode = mp.Lock()
 
-    led_process = mp.Process(target=led_control, args=(led_queue, demo_mode,))
-    led_process.start()
+        self.led_process = mp.Process(target=led_control, args=(self.led_queue, self.demo_mode,))
 
-    shutting_down = False
+        self.shutting_down = False
+        self.last_button_release = 0
+        self.show_end_of_lines = False
 
-    def shutdown():
-        nonlocal shutting_down
-        shutting_down = True
-        led_queue.put_nowait(None)
+        self.button = Button(3, hold_time=2, bounce_time=0.05)
+        self.button.when_held = self.shutdown
+        self.button.when_released = self.button_pressed
+
+        self.tft = SattrackerTFT()
+
+        self.tle_updated_time = None
+
+        self.tracker = None  # load in start because it takes quite a long time
+
+        self.led_array = LedArray(ring_radii=RING_RADII, ring_ledns=RING_LEDNS, ring_startangles=RING_STARTANGLES,
+                                  ring_dirs=RING_DIRS, eq_radius=EQUIV_RADIUS,
+                                  lat=CENTER_LOCATION.lat, long=CENTER_LOCATION.long,
+                                  upper_levels_alt_lower_boundaries=UPPER_LEVELS_ALT_LOWER_BOUNDARIES)
+
+    def start(self):
+        self.led_process.start()
+        self.tft.clear()
+
+        if (not os.path.isfile(TLE_FILENAME)) or \
+                (datetime.now() - datetime.fromtimestamp(os.path.getmtime(TLE_FILENAME))) > timedelta(days=1):
+            self.tft.write_message("Downloading TLEs")
+            update_tle_file()
+        self.tle_updated_time = datetime.fromtimestamp(os.path.getmtime(TLE_FILENAME))
+
+        self.tft.write_message("Loading Satellites")
+        self.tracker = NearbySatFinder(TLE_FILENAME, CENTER_LOCATION)
+        self.tracker.nearby_now()  # run once to remove errors
+
+        self.loop()
+
+    def loop(self):
+        oddstep = False
+        while True:
+            if not self.demo_mode.acquire(block=False):
+                self.tft.write_message("Showing off :D")
+                self.demo_mode.acquire()
+            self.demo_mode.release()
+
+            step_start_time = time()
+
+            self.check_tle_update()
+
+            nearby_sats = self.tracker.nearby_now()
+
+            tft_lines = [("{:03d} sats<{}km      {}".format(len(nearby_sats), EQUIV_RADIUS, "-" if oddstep else "|"),
+                          self.tft.WHITE, self.tft.BLUE)]
+            active_leds = {}
+            for name, lat, long, alt in nearby_sats:
+                _, led_id, _ = self.led_array.closest_led(lat, long, alt)
+                tft_color, priority, led_color = color_priority_from_name(name)
+                if (led_id not in active_leds) or priority > active_leds[led_id][0]:
+                    active_leds[led_id] = (priority, led_color)
+                line = name[2:] + " {}km".format(int(round(alt)))
+                if self.show_end_of_lines:
+                    line = line[-21:]
+                line = line[:21] + max(21 - len(line), 0) * " "  # trim to display length and pad
+                tft_lines.append((line, tft_color, self.tft.BLACK))
+
+            if self.show_end_of_lines and time() - self.last_button_release > 2:
+                self.show_end_of_lines = False
+            if self.shutting_down:
+                break
+            self.led_queue.put_nowait(active_leds)
+
+            self.tft.write_lines(tft_lines)
+
+            oddstep = not oddstep
+
+            step_time = time() - step_start_time
+            print("step_time: {:.2f}s".format(step_time))
+            if step_time < TARGET_STEP_TIME:
+                sleep(TARGET_STEP_TIME - step_time)
+
+    def check_tle_update(self):
+        if datetime.now() - self.tle_updated_time > timedelta(days=1):
+            self.tft.write_message("Downloading TLEs")
+            self.tle_updated_time = update_tle_file()
+            self.tft.write_message("Loading Satellites")
+            self.tracker = NearbySatFinder("3le.txt", CENTER_LOCATION)
+            self.tracker.nearby_now()  # run once to remove errors
+
+    def shutdown(self):
+        self.shutting_down = True
+        self.led_queue.put_nowait(None)
         sleep(0.5)
-        write_message("Shutting down...")
+        self.tft.write_message("Shutting down...")
         sleep(0.5)
         check_call(['sudo', 'poweroff'])
         sleep(10)
 
-    def button_pressed():
-        nonlocal last_button_release, show_end_of_lines
-        if time() - last_button_release < 1:
-            led_queue.put_nowait("DEMO")
+    def button_pressed(self):
+        if time() - self.last_button_release < 1:
+            self.led_queue.put_nowait("DEMO")
         else:
-            if not demo_mode.acquire(block=False):
-                led_queue.put("BUTTON")
+            if not self.demo_mode.acquire(block=False):
+                self.led_queue.put("BUTTON")
             else:
-                demo_mode.release()
-                show_end_of_lines = True
-                last_button_release = time()
-
-    the_btn = Button(3, hold_time=2, bounce_time=0.05)
-    the_btn.when_held = shutdown
-    last_button_release = 0
-    the_btn.when_released = button_pressed
-
-    TFT = init_tft()
-
-    def write_message(message):
-        TFT.clear_display(TFT.BLACK)
-        TFT.put_string(message, 0, 0, TFT.WHITE, TFT.BLACK, font=3)
-
-    TFT.clear_display(TFT.BLACK)
-
-    if (not os.path.isfile(TLE_FILENAME)) or \
-            (datetime.now() - datetime.fromtimestamp(os.path.getmtime(TLE_FILENAME))) > timedelta(days=1):
-        write_message("Downloading TLEs")
-        update_tle_file()
-    tle_updated_time = datetime.fromtimestamp(os.path.getmtime(TLE_FILENAME))
-
-    write_message("Loading Satellites")
-    tracker = SatTracker(TLE_FILENAME, CENTER_LOCATION)
-
-    leds = LedArray(ring_radii=RING_RADII, ring_ledns=RING_LEDNS, ring_startangles=RING_STARTANGLES,
-                    ring_dirs=RING_DIRS, eq_radius=EQUIV_RADIUS,
-                    lat=CENTER_LOCATION.lat, long=CENTER_LOCATION.long,
-                    upper_levels_alt_lower_boundaries=UPPER_LEVELS_ALT_LOWER_BOUNDARIES)
-
-    tracker.nearby_now()  # run once to remove errors
-    oddstep = True
-    show_end_of_lines = False
-    all_empty_strings = 12 * [(" " * int(128 / 6), TFT.BLACK)]
-    prev_strings = all_empty_strings
-    while True:
-        if not demo_mode.acquire(block=False):
-            write_message("Showing off :D")
-            prev_strings = all_empty_strings
-            demo_mode.acquire()
-        demo_mode.release()
-
-        step_start_time = time()
-        if datetime.now() - tle_updated_time > timedelta(days=1):
-            write_message("Downloading TLEs")
-            tle_updated_time = update_tle_file()
-            write_message("Loading Satellites")
-            tracker = SatTracker("3le.txt", CENTER_LOCATION)
-            tracker.nearby_now()  # run once to remove errors
-
-            prev_strings = all_empty_strings
-
-        nearby_sats = tracker.nearby_now()
-
-        strings = []
-        active_leds = {}
-        for name, lat, long, alt in nearby_sats:
-            _, led_id, _ = leds.closest_led(lat, long, alt)
-            tft_color, priority, led_color = color_priority_from_name(name)
-            if (led_id not in active_leds) or priority > active_leds[led_id][0]:
-                active_leds[led_id] = (priority, led_color)
-            line = name[2:] + " {}km".format(int(round(alt)))
-            if show_end_of_lines:
-                line = line[-21:]
-            line = line[:21] + max(21 - len(line), 0) * " "  # trim to display length and pad
-            strings.append((line, TFT.colour565(*tft_color)))
-
-        if show_end_of_lines and time() - last_button_release > 2:
-            show_end_of_lines = False
-        if shutting_down:
-            break
-        led_queue.put_nowait(active_leds)
-        strings += (12 - len(strings)) * [(" " * int(128 / 6), TFT.BLACK)]
-
-        TFT.put_chars("{:03d} sats<{}km      {}".format(len(nearby_sats), EQUIV_RADIUS, "-" if oddstep else "|"),
-                      0, 0, TFT.WHITE, TFT.BLUE)
-        oddstep = not oddstep
-        dy = 10
-        for (s, c), (prev_s, _) in zip(strings, prev_strings):
-            if s != prev_s:
-                TFT.put_chars(s, 0, dy, c, TFT.BLACK)  # std font 3 (default)
-            dy += 10
-        prev_strings = strings
-
-        step_time = time() - step_start_time
-        print("step_time: {:.2f}s".format(step_time))
-        if step_time < TARGET_STEP_TIME:
-            sleep(TARGET_STEP_TIME - step_time)
+                self.demo_mode.release()
+                self.show_end_of_lines = True
+                self.last_button_release = time()
 
 
 if __name__ == "__main__":
-    main_loop()
+    sat_tracker = SatTracker()
+    sat_tracker.start()
