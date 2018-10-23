@@ -6,7 +6,7 @@ import subprocess
 import queue
 from collections import defaultdict, namedtuple
 import os.path
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 from subprocess import check_call
 
@@ -23,6 +23,7 @@ from demo import chase_loop, random_loop, rings_loop, spinning_loop, alternate_l
 from credentials import SPACETRACK_PASSWD, SPACETRACK_USER
 
 Pos = namedtuple("Pos", "lat long")
+RGB = namedtuple("RGB", "r g b")
 
 # Constants determining device behavior
 CENTER_LOCATION = Pos(lat=48.224708, long=16.438082)
@@ -61,11 +62,11 @@ HIGHLY_INTERESTING_CLASS = ["ISS", "TIANGONG", "DRAGON", "SOYUZ", "PROGRESS", "H
 PLANETLABS_CLASS = ["FLOCK", "DOVE"]
 
 CLASS_COLORS_PRIORITIES = [  # [substring, substring,...]: (tft_color, priority, led_color)
-    (["DEB"], ((255, 0, 0), 0, (255, 0, 0))),
-    (["R/B"], ((255, 90, 0), 1, (188, 86, 0))),
-    (PLANETLABS_CLASS, ((0, 0, 255), 2, (0, 0, 255))),
-    (HIGHLY_INTERESTING_CLASS, ((0, 255, 0), 10, (0, 255, 0))),
-    ([""], ((255, 255, 255), 2, (255 // 3, 255 // 3, 255 // 3))),  # wildcard
+    (["DEB"], (RGB(255, 0, 0), 0, RGB(255, 0, 0))),
+    (["R/B"], (RGB(255, 90, 0), 1, RGB(188, 86, 0))),
+    (PLANETLABS_CLASS, (RGB(0, 0, 255), 2, RGB(0, 0, 255))),
+    (HIGHLY_INTERESTING_CLASS, (RGB(0, 255, 0), 10, RGB(0, 255, 0))),
+    ([""], (RGB(255, 255, 255), 2, RGB(255 // 3, 255 // 3, 255 // 3))),  # wildcard
 ]
 # --------------------------------------------------------------
 
@@ -74,7 +75,7 @@ CLASS_COLORS_PRIORITIES = [  # [substring, substring,...]: (tft_color, priority,
 RING_RADII = [47.5, 32.0, 16.5, 0.0]
 RING_LEDNS = [18, 12, 6, 1]
 RING_STARTANGLES = [-np.pi / 2 + np.deg2rad(10), -np.pi / 2, -np.pi / 2 - np.deg2rad(30), 0]
-RING_DIRS = [1, -1, -1, 1]  # I connected the LEDs in the first ring in the opposite direction for some reason...
+RING_DIRECTIONS = [1, -1, -1, 1]  # I connected the LEDs in the first ring in the opposite direction for some reason...
 # --------------------------------------------------------------
 
 # constants related to the WS2812B LEDs
@@ -95,8 +96,6 @@ TFT_RST = 23
 TFT_CE = 0  # 0 or 1 for CE0 / CE1 number (NOT the pin#)
 TFT_DC = 22  # Labeled on board as "A0"
 TFT_LED = 24  # LED backlight sinks 10-14 mA @ 3V
-
-
 # --------------------------------------------------------------
 
 
@@ -164,15 +163,14 @@ class NearbySatFinder(object):
 
 
 class LedArray(object):
-    def __init__(self, ring_radii, ring_ledns, ring_startangles, ring_dirs, eq_radius, lat, long,
+    def __init__(self, ring_radii, ring_ledns, ring_startangles, ring_dirs, eq_radius, pos: Pos,
                  upper_levels_alt_lower_boundaries):
         self.eq_radius = eq_radius  # equivalent real radius in km
-        self.lat = lat
-        self.long = long
+        self.pos = pos
         self.upper_levels_alt_lower_boundaries = upper_levels_alt_lower_boundaries
         self.level_ledn = np.sum(ring_ledns)
 
-        self.longfactor = np.cos(np.deg2rad(lat))
+        self.longfactor = np.cos(np.deg2rad(self.pos.lat))
         degreelength = 111  # km
         self.levels_led_poss = []
         distance_factor = eq_radius / np.max(ring_radii)
@@ -196,8 +194,8 @@ class LedArray(object):
         return i
 
     def closest_led(self, lat, long, alt):
-        y = lat - self.lat
-        x = long - self.long
+        y = lat - self.pos.lat
+        x = long - self.pos.long
 
         level = self._level_from_alt(alt)
         closest_led_index = None
@@ -211,6 +209,13 @@ class LedArray(object):
         closest_led_pos = self.levels_led_poss[level][closest_led_index]
         closest_led_index += level * self.level_ledn
         return closest_led_pos, closest_led_index, closest_led_distance
+
+
+def led_array_from_constants():
+    # convenience function
+    return LedArray(ring_radii=RING_RADII, ring_ledns=RING_LEDNS, ring_startangles=RING_STARTANGLES,
+                    ring_dirs=RING_DIRECTIONS, eq_radius=EQUIV_RADIUS, pos=CENTER_LOCATION,
+                    upper_levels_alt_lower_boundaries=UPPER_LEVELS_ALT_LOWER_BOUNDARIES)
 
 
 def color_priority_from_name(name):
@@ -241,10 +246,14 @@ def run_demo(strip, led_queue):
                 break
 
 
+def led_strip_from_constants():
+    return neopixel.Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA,
+                                      LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL,
+                                      strip_type=neopixel.ws.WS2811_STRIP_GRB)
+
+
 def led_control(led_queue: mp.Queue, demo_mode: mp.Lock):
-    strip = neopixel.Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA,
-                                       LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL,
-                                       strip_type=neopixel.ws.WS2811_STRIP_GRB)
+    strip = led_strip_from_constants()
 
     # Intialize the library (must be called once before other functions).
     strip.begin()
@@ -256,9 +265,9 @@ def led_control(led_queue: mp.Queue, demo_mode: mp.Lock):
 
     set_all(strip, neopixel.Color(0, 0, 0))
 
-    current = defaultdict(lambda: (0, 0, 0))
-    target = defaultdict(lambda: (0, 0, 0))
-    step = defaultdict(lambda: (0, 0, 0))
+    current = defaultdict(lambda: RGB(0, 0, 0))  # TODO: add variable type hints once Raspbian includes Python >=3.6
+    target = defaultdict(lambda: RGB(0, 0, 0))
+    step = defaultdict(lambda: RGB(0, 0, 0))
     loading_anim_process = mp.Process(target=half_loop, args=(strip,))
     loading_anim_process.start()
     m = led_queue.get()
@@ -323,9 +332,9 @@ class SattrackerTFT(object):
     num_lines = 12
     num_chars = int(128 / 6)
 
-    BLACK = (0, 0, 0)
-    WHITE = (255, 255, 255)
-    BLUE = (0, 0, 255)
+    BLACK = RGB(0, 0, 0)
+    WHITE = RGB(255, 255, 255)
+    BLUE = RGB(0, 0, 255)
 
     def __init__(self):
         GPIO.setwarnings(False)
@@ -340,12 +349,12 @@ class SattrackerTFT(object):
         self._tft.put_string(message, 0, 0, self._tft.WHITE, self._tft.BLACK, font=3)
         self._prev_lines = self.num_lines * [(None, None, None)]
 
-    def clear(self, color=None):
+    def clear(self, color: Optional[RGB] = None):
         if color is None:
             color = self._tft.BLACK
         self._tft.clear_display(color)
 
-    def write_lines(self, lines):
+    def write_lines(self, lines: List[Tuple[str, RGB, RGB]]):
         lines += (self.num_lines - len(lines)) * [(" " * self.num_chars, self.BLACK, self.BLACK)]
         dy = 0
         for ((new_text, new_colorfg, new_colorbg),
@@ -381,10 +390,7 @@ class SatTracker(object):
 
         self.tracker = None  # load in start because it takes quite a long time
 
-        self.led_array = LedArray(ring_radii=RING_RADII, ring_ledns=RING_LEDNS, ring_startangles=RING_STARTANGLES,
-                                  ring_dirs=RING_DIRS, eq_radius=EQUIV_RADIUS,
-                                  lat=CENTER_LOCATION.lat, long=CENTER_LOCATION.long,
-                                  upper_levels_alt_lower_boundaries=UPPER_LEVELS_ALT_LOWER_BOUNDARIES)
+        self.led_array = led_array_from_constants()
 
     def start(self):
         self.led_process.start()
