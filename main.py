@@ -6,7 +6,6 @@ import subprocess
 import queue
 from collections import defaultdict, namedtuple
 import os.path
-import sys
 
 from subprocess import check_call
 
@@ -99,9 +98,9 @@ TFT_LED = 24  # LED backlight sinks 10-14 mA @ 3V
 
 
 class SatTracker(object):
-    def __init__(self, tlefile, loc):
-        self.loc = loc  # lat long
-        self.longfactor = np.cos(np.deg2rad(loc[0]))
+    def __init__(self, tlefile: str, loc: Pos):
+        self.loc = loc
+        self.longfactor = np.cos(np.deg2rad(loc.lat))
         self.tles = []
         satnames = []
 
@@ -115,8 +114,7 @@ class SatTracker(object):
                     # check if we are at the end of the file after reading it
                     if f.read(1) != "":  # at the end file.read returns ""
                         # if we are not at the end, something is wrong -> abort
-                        print("unexpected empty line in TLE file")
-                        sys.exit()
+                        raise ValueError("Unexpected empty line in TLE file!")
 
                     print("Loaded {} sats.".format(n))
                     break
@@ -145,7 +143,7 @@ class SatTracker(object):
 
         lons, lats, alts, errors = self.orbs.get_lonlatalt(now)
         t2 = time()
-        rough_near = np.logical_and(np.abs(lats - self.loc[0]) < 3, np.abs(lons - self.loc[1]) < 3)
+        rough_near = np.logical_and(np.abs(lats - self.loc.lat) < 3, np.abs(lons - self.loc.long) < 3)
         valid_satpos = list(
             zip(self.satnames[~errors][rough_near], lats[rough_near], lons[rough_near], alts[rough_near]))
         nearby = [(name, lat, lon, alt) for name, lat, lon, alt in valid_satpos if
@@ -210,7 +208,6 @@ class LedArray(object):
         closest_led_pos = self.levels_led_poss[level][closest_led_index]
         closest_led_index += level * self.level_ledn
         return closest_led_pos, closest_led_index, closest_led_distance
-
 
 
 def color_priority_from_name(name):
