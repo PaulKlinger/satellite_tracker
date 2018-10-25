@@ -348,8 +348,8 @@ class SatTracker(object):
             tft_lines = [("{:03d} sats<{}km      {}".format(len(nearby_sats), EQUIV_RADIUS, "-" if oddstep else "|"),
                           self.tft.WHITE, self.tft.BLUE)]
             active_leds = {}
-            for name, lat, long, alt in nearby_sats:
-                _, led_id, _ = self.led_array.closest_led(lat, long, alt)
+            for name, pos, alt in nearby_sats:
+                _, led_id, _ = self.led_array.closest_led(pos, alt)
                 tft_color, priority, led_color = color_priority_from_name(name)
                 if (led_id not in active_leds) or priority > active_leds[led_id][0]:
                     active_leds[led_id] = (priority, led_color)
