@@ -60,7 +60,7 @@ class NearbySatFinder(object):
         print("creating orbitals")
         self.orbs = Orbitals(self.tles)
 
-    def nearby_now(self):
+    def nearby_now(self) -> List[Tuple[str, Pos, float]]:
         now = datetime.utcnow()
 
         t1 = time()
@@ -71,7 +71,7 @@ class NearbySatFinder(object):
         rough_near = np.logical_and(np.abs(lats - self.loc.lat) < 3, np.abs(lons - self.loc.long) < 3)
         valid_satpos = list(
             zip(self.satnames[~errors][rough_near], lats[rough_near], lons[rough_near], alts[rough_near]))
-        nearby = [(name, lat, lon, alt) for name, lat, lon, alt in valid_satpos if
+        nearby = [(name, Pos(lat=lat, long=lon), alt) for name, lat, lon, alt in valid_satpos if
                   distance.distance(self.loc, (lat, lon)).km < 200]
         t3 = time()
         print("loc:{:.2f}s dist: {:.2f}s tot: {:.2f}s, sats: {:02d}".format(t2 - t1, t3 - t2, t3 - t1, len(nearby)))
@@ -102,13 +102,15 @@ class LedArray(object):
             for ringr, ledn, startangle, direction in zip(ring_radii, ring_ledns, ring_startangles, ring_dirs):
                 startangle += (level % 2) * np.pi  # upper levels are rotated 180 degree (to connect do/di)
                 anglestep = 2 * np.pi / ledn
-                led_poss += [(-distance_factor * ringr * np.cos(startangle + i * anglestep * direction) / degreelength,
-                              distance_factor * ringr * np.sin(
-                                  startangle + i * anglestep * direction) / degreelength / self.longfactor
-                              ) for i in range(ledn)]
+                led_poss += [
+                    Pos(lat=pos.lat - distance_factor * ringr * np.cos(
+                        startangle + i * anglestep * direction) / degreelength,
+                        long=pos.long + distance_factor * ringr * np.sin(
+                            startangle + i * anglestep * direction) / degreelength / self.longfactor
+                        ) for i in range(ledn)]
             self.levels_led_poss.append(led_poss)
 
-    def _level_from_alt(self, alt):
+    def _level_from_alt(self, alt: float) -> int:
         i = 0
         for alt_boundary in self.upper_levels_alt_lower_boundaries:
             if alt < alt_boundary:
@@ -116,15 +118,13 @@ class LedArray(object):
             i += 1
         return i
 
-    def closest_led(self, lat, long, alt):
-        y = lat - self.pos.lat
-        x = long - self.pos.long
-
+    def closest_led(self, pos: Pos, alt: float) -> Tuple[Pos, int, float]:
         level = self._level_from_alt(alt)
         closest_led_index = None
         closest_led_distance = (2 * self.eq_radius) ** 2
         for i, ledpos in enumerate(self.levels_led_poss[level]):
-            d = ((ledpos[1] - x) * self.longfactor) ** 2 + (ledpos[0] - y) ** 2
+            # naive distance calculation, accurate enough for the inter-led distances
+            d = ((ledpos.long - pos.long) * self.longfactor) ** 2 + (ledpos.lat - pos.lat) ** 2
             if d < closest_led_distance:
                 closest_led_distance = d
                 closest_led_index = i
@@ -141,13 +141,13 @@ def led_array_from_constants():
                     upper_levels_alt_lower_boundaries=UPPER_LEVELS_ALT_LOWER_BOUNDARIES)
 
 
-def color_priority_from_name(name):
+def color_priority_from_name(name: str) -> Tuple[RGB, int, RGB]:
     for c, tftc_prio_ledc in CLASS_COLORS_PRIORITIES:
         if any(s in name for s in c):
             return tftc_prio_ledc
 
 
-def run_demo(strip, led_queue):
+def run_demo(strip: neopixel.Adafruit_NeoPixel, led_queue: mp.Queue):
     for demo in (chase_loop, spinning_loop, rings_loop, random_loop):
         print("demo: {}".format(demo))
         p = mp.Process(target=demo, kwargs={"strip": strip, })
@@ -243,7 +243,7 @@ def led_control(led_queue: mp.Queue, demo_mode: mp.Lock):
             sleep(LED_STEP_TIME - (t1 - t0))
 
 
-def update_tle_file():
+def update_tle_file() -> datetime:
     # TODO: add error handling...
     subprocess.run(
         "curl {} > {}".format(SPACETRACK_URL, TLE_FILENAME),
@@ -252,7 +252,7 @@ def update_tle_file():
 
 
 class SattrackerTFT(object):
-    num_lines = 12
+    num_lines = 13
     num_chars = int(128 / 6)
 
     BLACK = RGB(0, 0, 0)
