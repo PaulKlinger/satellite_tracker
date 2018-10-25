@@ -687,12 +687,12 @@
 <text x="-46.5" y="1.55" size="2.54" layer="21" font="vector" ratio="14">+</text>
 <text x="-45.2" y="-1.2" size="1.4224" layer="21" font="vector" ratio="20" rot="R90">DI</text>
 <text x="46.45" y="-1.25" size="1.4224" layer="21" font="vector" ratio="20" rot="R90">DO</text>
-<text x="44.6" y="-3.7" size="2.1844" layer="21" font="vector" ratio="20">-</text>
-<text x="44.85" y="2.75" size="2.54" layer="21" font="vector" ratio="20">+</text>
+<text x="44.65" y="1.65" size="2.1844" layer="21" font="vector" ratio="20">-</text>
+<text x="44.15" y="-3.8" size="2.54" layer="21" font="vector" ratio="20">+</text>
 <text x="-4.8" y="-0.5" size="1.27" layer="22" font="vector" ratio="18" rot="MR0">Paul Klinger</text>
 <text x="-44.95" y="1.55" size="2.54" layer="22" font="vector" ratio="20" rot="MR0">+</text>
-<text x="46.7" y="2.75" size="2.54" layer="22" font="vector" ratio="20" rot="MR0">+</text>
-<text x="46.2" y="-3.7" size="2.1844" layer="22" font="vector" ratio="20" rot="MR0">-</text>
+<text x="46" y="-3.75" size="2.54" layer="22" font="vector" ratio="20" rot="MR0">+</text>
+<text x="46.15" y="1.6" size="2.1844" layer="22" font="vector" ratio="20" rot="MR0">-</text>
 <text x="-45" y="-3.35" size="2.1844" layer="22" font="vector" ratio="20" rot="MR0">-</text>
 <text x="-45.2" y="1.15" size="1.778" layer="22" font="vector" ratio="20" rot="MR270">DI</text>
 <text x="46.8" y="1.4" size="1.778" layer="22" font="vector" ratio="20" rot="MR270">DO</text>
