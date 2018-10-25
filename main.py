@@ -5,6 +5,7 @@ import multiprocessing as mp
 import subprocess
 import queue
 from collections import defaultdict
+import os
 import os.path
 from typing import List, Tuple, Optional
 
@@ -244,11 +245,21 @@ def led_control(led_queue: mp.Queue, demo_mode: mp.Lock):
 
 
 def update_tle_file() -> datetime:
-    # TODO: add error handling...
+    tmp_filename = TLE_FILENAME + "_tmp"
     subprocess.run(
-        "curl {} > {}".format(SPACETRACK_URL, TLE_FILENAME),
+        "curl {} > {}".format(SPACETRACK_URL, tmp_filename),
         shell=True)
-    return datetime.now()
+    with open(tmp_filename, encoding="utf-8") as f:
+        non_empty_line_count = sum(1 for l in f if l.strip())
+
+    # just some heuristics to check if the file is valid
+    if non_empty_line_count > 30000 and non_empty_line_count % 3 == 0:
+        # (probably) valid, overwrite old file and set last update time to current time
+        os.rename(tmp_filename, TLE_FILENAME)
+        return datetime.now()
+    else:
+        # invalid, try again in 10 minutes
+        return datetime.now() - timedelta(hours=23, minutes=50)
 
 
 class SattrackerTFT(object):
