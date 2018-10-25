@@ -1269,7 +1269,6 @@ design rules under a new name.</description>
 <via x="-16" y="6.4" extent="1-16" drill="0.35"/>
 <wire x1="-16.793940625" y1="6.8632375" x2="-16" y2="6.4" width="0.2" layer="1"/>
 <contactref element="JP3" pad="1"/>
-<contactref element="JP1" pad="1"/>
 <via x="-45.8" y="-6.6" extent="1-16" drill="0.35"/>
 <wire x1="-45.020503125" y1="-5.1907" x2="-44.7" y2="-4.870196875" width="0.1524" layer="1" curve="90"/>
 <wire x1="-45.020503125" y1="-5.1907" x2="-44.7" y2="-4.870196875" width="0.254" layer="1" curve="90"/>
@@ -1362,6 +1361,7 @@ design rules under a new name.</description>
 <via x="15.1" y="10.3" extent="1-16" drill="0.35"/>
 <wire x1="-27.413940625" y1="-18.596759375" x2="-26.6" y2="-18.1" width="0.254" layer="1"/>
 <via x="-26.6" y="-18.1" extent="1-16" drill="0.35"/>
+<contactref element="JP1" pad="3"/>
 </signal>
 <signal name="N$1">
 <contactref element="LED1" pad="4-DIN"/>
@@ -1854,7 +1854,6 @@ design rules under a new name.</description>
 <contactref element="LED37" pad="1-VDD"/>
 <contactref element="C37" pad="2"/>
 <contactref element="JP3" pad="3"/>
-<contactref element="JP1" pad="3"/>
 <wire x1="-47.41949375" y1="-10.589296875" x2="-47" y2="-11.008790625" width="0.254" layer="1"/>
 <wire x1="-47" y1="-11.008790625" x2="-47" y2="-12" width="0.254" layer="1"/>
 <via x="-47" y="-12" extent="1-16" drill="0.35"/>
@@ -1873,9 +1872,6 @@ design rules under a new name.</description>
 <wire x1="-40.2" y1="-27.6" x2="-40.2" y2="-28.15" width="0.254" layer="16"/>
 <wire x1="-27.72" y1="-40.08" x2="-26.7" y2="-41.1" width="0.254" layer="16"/>
 <wire x1="-29.463790625" y1="-38.9788" x2="-28.327109375" y2="-40.11548125" width="0.254" layer="1"/>
-<wire x1="47.69754375" y1="2.54245625" x2="45.3" y2="2.6" width="0.6096" layer="16"/>
-<via x="45.3" y="2.6" extent="1-16" drill="0.35"/>
-<wire x1="47.7" y1="2.54" x2="47.69754375" y2="2.54245625" width="0.4064" layer="16"/>
 <wire x1="48.27036875" y1="-5.9637375" x2="46.8" y2="-7.3" width="0.254" layer="1"/>
 <via x="46.8" y="-7.3" extent="1-16" drill="0.35"/>
 <wire x1="46.8" y1="-7.3" x2="46.24" y2="-8.1275" width="0.254" layer="16"/>
@@ -2083,6 +2079,7 @@ design rules under a new name.</description>
 <wire x1="0.45" y1="0.25" x2="1.85" y2="-0.2975" width="0.254" layer="16"/>
 <wire x1="-45.895965625" y1="-8.46248125" x2="-47" y2="-12" width="0.254" layer="16"/>
 <wire x1="-27.19" y1="-15.5375" x2="-27.85" y2="-14.05" width="0.254" layer="16"/>
+<contactref element="JP1" pad="1"/>
 </signal>
 <signal name="N$37">
 <contactref element="JP3" pad="2"/>

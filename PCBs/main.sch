@@ -855,8 +855,8 @@
 <instance part="P+38" gate="VCC" x="10.16" y="50.8"/>
 <instance part="JP3" gate="A" x="0" y="45.72" rot="R180"/>
 <instance part="JP1" gate="A" x="1328.42" y="50.8" rot="R180"/>
-<instance part="GND39" gate="1" x="1338.58" y="45.72"/>
-<instance part="P+39" gate="VCC" x="1338.58" y="55.88"/>
+<instance part="GND39" gate="1" x="1338.58" y="55.88" rot="R180"/>
+<instance part="P+39" gate="VCC" x="1338.58" y="45.72" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -1200,9 +1200,9 @@
 <wire x1="10.16" y1="48.26" x2="2.54" y2="48.26" width="0.1524" layer="91"/>
 </segment>
 <segment>
+<pinref part="JP1" gate="A" pin="1"/>
 <pinref part="P+39" gate="VCC" pin="VCC"/>
-<pinref part="JP1" gate="A" pin="3"/>
-<wire x1="1338.58" y1="53.34" x2="1330.96" y2="53.34" width="0.1524" layer="91"/>
+<wire x1="1330.96" y1="48.26" x2="1338.58" y2="48.26" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -1508,9 +1508,9 @@
 <wire x1="2.54" y1="43.18" x2="10.16" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 <segment>
+<pinref part="JP1" gate="A" pin="3"/>
 <pinref part="GND39" gate="1" pin="GND"/>
-<pinref part="JP1" gate="A" pin="1"/>
-<wire x1="1338.58" y1="48.26" x2="1330.96" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="1330.96" y1="53.34" x2="1338.58" y2="53.34" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$1" class="0">
