@@ -274,7 +274,8 @@ class SattrackerTFT(object):
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
 
-        self._tft = TFT144(GPIO, spidev.SpiDev(), TFT_CE, TFT_DC, TFT_RST, TFT_LED, isRedBoard=True, spi_speed=16000000)
+        self._tft = TFT144(GPIO, spidev.SpiDev(), TFT_CE, TFT_DC, TFT_RST, TFT_LED, board_type=TFT144.NEW_RED_BOARD,
+                           orientation=TFT144.ORIENTATION180, spi_speed=16000000)
 
         self._prev_lines = self.num_lines * [(None, None, None)]
 
