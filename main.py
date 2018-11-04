@@ -361,8 +361,7 @@ class SatTracker(object):
 
             nearby_sats = self.tracker.nearby_now()
 
-            tft_lines = [("{:03d} sats<{}km      {}".format(len(nearby_sats), EQUIV_RADIUS, "-" if oddstep else "|"),
-                          self.tft.WHITE, self.tft.BLUE)]
+            tft_priority_lines = []
             active_leds = {}
             for name, pos, alt in nearby_sats:
                 _, led_id, _ = self.led_array.closest_led(pos, alt)
@@ -373,7 +372,11 @@ class SatTracker(object):
                 if self.show_end_of_lines:
                     line = line[-21:]
                 line = line[:21] + max(21 - len(line), 0) * " "  # trim to display length and pad
-                tft_lines.append((line, tft_color, self.tft.BLACK))
+                tft_priority_lines.append((priority, (line, tft_color, self.tft.BLACK)))
+
+            tft_priority_lines.sort(key=lambda l: l[0], reverse=True)
+            tft_lines = [("{:03d} sats<{}km      {}".format(len(nearby_sats),EQUIV_RADIUS, "-" if oddstep else "|"),
+                         self.tft.WHITE, self.tft.BLUE)] + [l[1] for l in tft_priority_lines]
 
             if self.show_end_of_lines and time() - self.last_button_release > 2:
                 self.show_end_of_lines = False
