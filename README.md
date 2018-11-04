@@ -8,8 +8,9 @@ The orbit_np.py file is a modified version of [pyorbital](https://github.com/pyt
 
 Requires https://github.com/PaulKlinger/LIBtft144 and https://github.com/jgarff/rpi_ws281x + a bunch of libraries from PyPi.
 
-The PCB design for the LED boards is in the PCBs folder. I've reversed the VCC/GND connections on one side of the pcb
-compared to my version to make assembly easier. The interconnect boards are in the PCB/auxiliary folder. I used
+The PCB design for the LED boards is in the PCBs/LED folder. I've reversed the VCC/GND connections on one side of the pcb
+compared to my version to make assembly easier. Files for hree additional PCBs connecting the various parts are in the
+PCB/auxiliary folder (these are not strictly necessary, I just used protoboard for the first version).
 
 The STLs and Fusion 360 source for the 3d printed parts are in the "3D printed parts" folder.
 Note that the 3d printer files are for a slightly earlier version of the auxiliary PCBs, which still had some issues.
