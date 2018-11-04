@@ -315,6 +315,10 @@ class SatTracker(object):
         self.last_button_release = 0
         self.show_end_of_lines = False
 
+        # The button has multiple functions:
+        # Turn the device on when off, single press to show the end of long lines on the display,
+        # double press to start demo mode, single press to stay at one animation in demo mode,
+        # long press to shut down
         self.button = Button(3, hold_time=2, bounce_time=0.05)
         self.button.when_held = self.shutdown
         self.button.when_released = self.button_pressed
