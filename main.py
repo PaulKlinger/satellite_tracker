@@ -375,8 +375,9 @@ class SatTracker(object):
                 tft_priority_lines.append((priority, (line, tft_color, self.tft.BLACK)))
 
             tft_priority_lines.sort(key=lambda l: l[0], reverse=True)
-            tft_lines = [("{:03d} sats<{}km      {}".format(len(nearby_sats),EQUIV_RADIUS, "-" if oddstep else "|"),
-                         self.tft.WHITE, self.tft.BLUE)] + [l[1] for l in tft_priority_lines]
+            tft_lines = ([("{:03d} sats<{}km      {}".format(len(nearby_sats), EQUIV_RADIUS, "-" if oddstep else "|"),
+                         self.tft.WHITE, self.tft.BLUE)]
+                         + [l[1] for l in tft_priority_lines])
 
             if self.show_end_of_lines and time() - self.last_button_release > 2:
                 self.show_end_of_lines = False

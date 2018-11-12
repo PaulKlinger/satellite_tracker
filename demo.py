@@ -107,6 +107,9 @@ def random_loop(strip, switch_time=0.5, total_brightness=100, timeout=None, curr
 
 
 def hsl_to_rgbnorm(h, s, l):
+    # 0<=h<=360
+    # 0<s<1
+    # 0<l<1
     c = (1 - np.abs(2 * l - 1)) * s
     hp = h / 60
     x = c * (1 - np.abs(hp % 2 - 1))
