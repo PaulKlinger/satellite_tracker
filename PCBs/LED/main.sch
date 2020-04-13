@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="9.1.0">
+<eagle version="9.7.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -116,15 +116,32 @@
 <layer number="135" name="silk_bottom" color="7" fill="1" visible="no" active="no"/>
 <layer number="136" name="silktop" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="137" name="silkbottom" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="138" name="mbTest" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="139" name="mtKeepout" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="140" name="mbKeepout" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="141" name="mtRestrict" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="142" name="mbRestrict" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="143" name="mvRestrict" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="144" name="Drill_legend" color="7" fill="1" visible="no" active="yes"/>
 <layer number="145" name="DrillLegend_01-16" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="146" name="DrillLegend_01-20" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="147" name="mMeasures" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="148" name="mDocument" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="149" name="mReference" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="150" name="Notes" color="7" fill="1" visible="no" active="yes"/>
 <layer number="151" name="HeatSink" color="7" fill="1" visible="no" active="yes"/>
 <layer number="152" name="_bDocu" color="7" fill="1" visible="no" active="yes"/>
 <layer number="153" name="FabDoc1" color="6" fill="1" visible="no" active="no"/>
 <layer number="154" name="FabDoc2" color="2" fill="1" visible="no" active="no"/>
 <layer number="155" name="FabDoc3" color="7" fill="15" visible="no" active="no"/>
+<layer number="166" name="AntennaArea" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="168" name="4mmHeightArea" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="191" name="mNets" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="192" name="mBusses" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="193" name="mPins" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="194" name="mSymbols" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="195" name="mNames" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="196" name="mValues" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="199" name="Contour" color="7" fill="1" visible="no" active="yes"/>
 <layer number="200" name="200bmp" color="1" fill="10" visible="no" active="yes"/>
 <layer number="201" name="201bmp" color="2" fill="1" visible="no" active="no"/>
@@ -409,78 +426,6 @@
 </deviceset>
 </devicesets>
 </library>
-<library name="Seeed-Capacitor" urn="urn:adsk.eagle:library:464">
-<packages>
-<package name="C0402" urn="urn:adsk.eagle:footprint:32368/1" library_version="1">
-<description>&lt;b&gt;0402&lt;b&gt;&lt;p&gt;</description>
-<smd name="1" x="0" y="0.4625" dx="0.5" dy="0.5" layer="1" roundness="50" rot="R270"/>
-<smd name="2" x="0" y="-0.4625" dx="0.5" dy="0.5" layer="1" roundness="50" rot="R270"/>
-<text x="0.635" y="1.27" size="0.889" layer="25" ratio="11" rot="R270">&gt;NAME</text>
-<text x="-1.524" y="1.397" size="0.635" layer="27" font="vector" ratio="10" rot="R270">&gt;VALUE</text>
-<polygon width="0.0254" layer="51">
-<vertex x="0.254" y="0.508"/>
-<vertex x="0.254" y="-0.508"/>
-<vertex x="-0.254" y="-0.508"/>
-<vertex x="-0.254" y="0.508"/>
-</polygon>
-<wire x1="0.3945" y1="-0.712" x2="0.2675" y2="-0.839" width="0.0762" layer="21" curve="-90"/>
-<wire x1="0.2675" y1="-0.839" x2="-0.2675" y2="-0.839" width="0.0762" layer="21"/>
-<wire x1="-0.2675" y1="-0.839" x2="-0.3945" y2="-0.712" width="0.0762" layer="21" curve="-90"/>
-<wire x1="-0.3945" y1="-0.712" x2="-0.3945" y2="0.712" width="0.0762" layer="21"/>
-<wire x1="-0.3945" y1="0.712" x2="-0.2675" y2="0.839" width="0.0762" layer="21" curve="-90"/>
-<wire x1="-0.2675" y1="0.839" x2="0.2675" y2="0.839" width="0.0762" layer="21"/>
-<wire x1="0.2675" y1="0.839" x2="0.3945" y2="0.712" width="0.0762" layer="21" curve="-90"/>
-<wire x1="0.3945" y1="0.712" x2="0.3945" y2="-0.712" width="0.0762" layer="21"/>
-</package>
-</packages>
-<packages3d>
-<package3d name="C0402" urn="urn:adsk.eagle:package:32379/1" type="box" library_version="1">
-<description>0402</description>
-<packageinstances>
-<packageinstance name="C0402"/>
-</packageinstances>
-</package3d>
-</packages3d>
-<symbols>
-<symbol name="C" urn="urn:adsk.eagle:symbol:32365/1" library_version="1">
-<wire x1="-0.635" y1="-1.016" x2="-0.635" y2="0" width="0.254" layer="94"/>
-<wire x1="-0.635" y1="0" x2="-0.635" y2="1.016" width="0.254" layer="94"/>
-<wire x1="0.635" y1="1.016" x2="0.635" y2="0" width="0.254" layer="94"/>
-<wire x1="0.635" y1="0" x2="0.635" y2="-1.016" width="0.254" layer="94"/>
-<wire x1="-1.27" y1="0" x2="-0.635" y2="0" width="0.1524" layer="94"/>
-<wire x1="0.635" y1="0" x2="1.27" y2="0" width="0.1524" layer="94"/>
-<text x="-3.81" y="1.27" size="1.27" layer="95" ratio="10">&gt;NAME</text>
-<text x="-3.81" y="-2.54" size="1.27" layer="96" ratio="10">&gt;VALUE</text>
-<pin name="1" x="-3.81" y="0" visible="off" length="short" direction="pas" swaplevel="1"/>
-<pin name="2" x="3.81" y="0" visible="off" length="short" direction="pas" swaplevel="1" rot="R180"/>
-</symbol>
-</symbols>
-<devicesets>
-<deviceset name="CERAMIC-100NF-25V-10%-X7R(0402)" urn="urn:adsk.eagle:component:32408/1" prefix="C" uservalue="yes" library_version="1">
-<description>302010024</description>
-<gates>
-<gate name="G$1" symbol="C" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="C0402">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="2" pad="2"/>
-</connects>
-<package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:32379/1"/>
-</package3dinstances>
-<technologies>
-<technology name="">
-<attribute name="MPN" value="CC0402KRX7R8BB104" constant="no"/>
-<attribute name="VALUE" value="100nf"/>
-</technology>
-</technologies>
-</device>
-</devices>
-</deviceset>
-</devicesets>
-</library>
 <library name="supply1" urn="urn:adsk.eagle:library:371">
 <description>&lt;b&gt;Supply Symbols&lt;/b&gt;&lt;p&gt;
  GND, VCC, 0V, +5V, -5V, etc.&lt;p&gt;
@@ -533,6 +478,75 @@
 </deviceset>
 </devicesets>
 </library>
+<library name="OPL_Capacitor" urn="urn:adsk.eagle:library:8004261">
+<description>&lt;b&gt;Seeed Open Parts Library (OPL) for the Seeed Fusion PCB Assembly Service
+&lt;br&gt;&lt;br&gt;
+&lt;a href="https://www.seeedstudio.com/opl.html" title="https://www.seeedstudio.com/opl.html"&gt;Seeed Fusion PCBA OPL&lt;/a&gt;&lt;br&gt;
+&lt;a href="https://www.seeedstudio.com/fusion_pcb.html"&gt;Order PCB/PCBA&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;a href="https://www.seeedstudio.com"&gt;www.seeedstudio.com&lt;/a&gt;
+&lt;br&gt;&lt;/b&gt;</description>
+<packages>
+<package name="C0805" urn="urn:adsk.eagle:footprint:8004272/1" library_version="3">
+<description>&lt;b&gt;0805&lt;b&gt;&lt;p&gt;</description>
+<wire x1="0.889" y1="-1.651" x2="-0.889" y2="-1.651" width="0.127" layer="21"/>
+<wire x1="-0.889" y1="-1.651" x2="-0.889" y2="1.651" width="0.127" layer="21"/>
+<wire x1="-0.889" y1="1.651" x2="0.889" y2="1.651" width="0.127" layer="21"/>
+<wire x1="0.889" y1="1.651" x2="0.889" y2="-1.651" width="0.127" layer="21"/>
+<smd name="1" x="0" y="0.889" dx="1.016" dy="1.397" layer="1" roundness="25" rot="R270"/>
+<smd name="2" x="0" y="-0.889" dx="1.016" dy="1.397" layer="1" roundness="25" rot="R270"/>
+<text x="1.143" y="1.905" size="0.889" layer="25" font="vector" ratio="11" rot="R270">&gt;NAME</text>
+<text x="-2.159" y="1.905" size="0.635" layer="27" ratio="10" rot="R270">&gt;VALUE</text>
+<rectangle x1="-1.4605" y1="-0.762" x2="1.4605" y2="0.762" layer="39" rot="R270"/>
+</package>
+</packages>
+<packages3d>
+<package3d name="C0805" urn="urn:adsk.eagle:package:8004286/1" type="box" library_version="3">
+<description>&lt;b&gt;0805&lt;b&gt;&lt;p&gt;</description>
+<packageinstances>
+<packageinstance name="C0805"/>
+</packageinstances>
+</package3d>
+</packages3d>
+<symbols>
+<symbol name="C" urn="urn:adsk.eagle:symbol:8004275/1" library_version="3">
+<wire x1="-0.635" y1="-1.016" x2="-0.635" y2="0" width="0.254" layer="94"/>
+<wire x1="-0.635" y1="0" x2="-0.635" y2="1.016" width="0.254" layer="94"/>
+<wire x1="0.635" y1="1.016" x2="0.635" y2="0" width="0.254" layer="94"/>
+<wire x1="0.635" y1="0" x2="0.635" y2="-1.016" width="0.254" layer="94"/>
+<wire x1="-1.27" y1="0" x2="-0.635" y2="0" width="0.1524" layer="94"/>
+<wire x1="0.635" y1="0" x2="1.27" y2="0" width="0.1524" layer="94"/>
+<text x="-3.81" y="1.27" size="1.27" layer="95" ratio="10">&gt;NAME</text>
+<text x="-3.81" y="-2.54" size="1.27" layer="96" ratio="10">&gt;VALUE</text>
+<pin name="1" x="-3.81" y="0" visible="off" length="short" direction="pas" swaplevel="1"/>
+<pin name="2" x="3.81" y="0" visible="off" length="short" direction="pas" swaplevel="1" rot="R180"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="CERAMIC-100NF-50V-10%-X7R(0805)" urn="urn:adsk.eagle:component:8004288/1" prefix="C" uservalue="yes" library_version="3">
+<description>302010165</description>
+<gates>
+<gate name="G$1" symbol="C" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="C0805">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:8004286/1"/>
+</package3dinstances>
+<technologies>
+<technology name="">
+<attribute name="MPN" value="CC0805KRX7R9BB104" constant="no"/>
+<attribute name="VALUE" value="100nf"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -545,151 +559,151 @@
 <parts>
 <part name="L" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C2" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C2" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED1" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C1" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C1" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED3" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C3" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C3" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED4" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C4" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C4" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED5" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+5" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C5" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C5" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND5" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED6" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C6" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C6" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED7" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C7" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C7" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED8" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+8" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C8" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C8" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND8" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED9" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+9" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C9" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C9" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND9" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED10" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+10" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C10" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C10" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND10" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED11" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+11" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C11" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C11" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND11" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED12" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+12" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C12" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C12" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND12" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED13" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+13" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C13" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C13" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND13" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED14" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+14" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C14" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C14" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND14" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED15" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+15" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C15" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C15" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND15" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED16" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+16" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C16" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C16" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND16" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED17" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+17" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C17" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C17" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND17" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED18" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+18" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C18" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C18" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND18" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED19" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+19" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C19" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C19" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND19" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED20" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+20" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C20" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C20" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND20" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED21" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+21" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C21" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C21" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND21" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED22" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+22" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C22" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C22" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND22" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED23" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+23" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C23" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C23" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND23" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED24" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+24" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C24" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C24" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND24" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED25" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+25" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C25" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C25" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND25" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED26" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+26" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C26" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C26" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND26" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED27" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+27" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C27" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C27" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND27" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED28" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+28" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C28" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C28" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND28" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED29" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+29" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C29" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C29" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND29" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED30" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+30" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C30" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C30" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND30" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED31" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+31" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C31" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C31" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND31" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED32" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+32" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C32" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C32" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND32" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED33" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+33" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C33" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C33" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND33" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED34" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+34" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C34" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C34" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND34" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED35" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+35" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C35" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C35" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND35" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED36" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+36" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C36" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C36" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND36" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="LED37" library="adafruit" deviceset="WS2812B" device="5050"/>
 <part name="P+37" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
-<part name="C37" library="Seeed-Capacitor" library_urn="urn:adsk.eagle:library:464" deviceset="CERAMIC-100NF-25V-10%-X7R(0402)" device="" package3d_urn="urn:adsk.eagle:package:32379/1" value="100nf"/>
+<part name="C37" library="OPL_Capacitor" library_urn="urn:adsk.eagle:library:8004261" deviceset="CERAMIC-100NF-50V-10%-X7R(0805)" device="" package3d_urn="urn:adsk.eagle:package:8004286/1" value="100nf"/>
 <part name="GND37" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND38" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="P+38" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
@@ -703,160 +717,433 @@
 <plain>
 </plain>
 <instances>
-<instance part="L" gate="G$1" x="25.4" y="48.26"/>
-<instance part="P+2" gate="VCC" x="30.48" y="66.04"/>
-<instance part="C2" gate="G$1" x="40.64" y="55.88" rot="R90"/>
-<instance part="GND2" gate="1" x="25.4" y="35.56"/>
-<instance part="LED1" gate="G$1" x="63.5" y="48.26"/>
-<instance part="P+1" gate="VCC" x="68.58" y="66.04"/>
-<instance part="C1" gate="G$1" x="78.74" y="55.88" rot="R90"/>
-<instance part="GND1" gate="1" x="63.5" y="35.56"/>
-<instance part="LED3" gate="G$1" x="99.06" y="48.26"/>
-<instance part="P+3" gate="VCC" x="104.14" y="66.04"/>
-<instance part="C3" gate="G$1" x="114.3" y="55.88" rot="R90"/>
-<instance part="GND3" gate="1" x="99.06" y="35.56"/>
-<instance part="LED4" gate="G$1" x="134.62" y="48.26"/>
-<instance part="P+4" gate="VCC" x="139.7" y="66.04"/>
-<instance part="C4" gate="G$1" x="149.86" y="55.88" rot="R90"/>
-<instance part="GND4" gate="1" x="134.62" y="35.56"/>
-<instance part="LED5" gate="G$1" x="172.72" y="48.26"/>
-<instance part="P+5" gate="VCC" x="177.8" y="66.04"/>
-<instance part="C5" gate="G$1" x="187.96" y="55.88" rot="R90"/>
-<instance part="GND5" gate="1" x="172.72" y="35.56"/>
-<instance part="LED6" gate="G$1" x="208.28" y="48.26"/>
-<instance part="P+6" gate="VCC" x="213.36" y="66.04"/>
-<instance part="C6" gate="G$1" x="223.52" y="55.88" rot="R90"/>
-<instance part="GND6" gate="1" x="208.28" y="35.56"/>
-<instance part="LED7" gate="G$1" x="241.3" y="48.26"/>
-<instance part="P+7" gate="VCC" x="246.38" y="66.04"/>
-<instance part="C7" gate="G$1" x="256.54" y="55.88" rot="R90"/>
-<instance part="GND7" gate="1" x="241.3" y="35.56"/>
-<instance part="LED8" gate="G$1" x="276.86" y="48.26"/>
-<instance part="P+8" gate="VCC" x="281.94" y="66.04"/>
-<instance part="C8" gate="G$1" x="292.1" y="55.88" rot="R90"/>
-<instance part="GND8" gate="1" x="276.86" y="35.56"/>
-<instance part="LED9" gate="G$1" x="312.42" y="48.26"/>
-<instance part="P+9" gate="VCC" x="317.5" y="66.04"/>
-<instance part="C9" gate="G$1" x="327.66" y="55.88" rot="R90"/>
-<instance part="GND9" gate="1" x="312.42" y="35.56"/>
-<instance part="LED10" gate="G$1" x="347.98" y="48.26"/>
-<instance part="P+10" gate="VCC" x="353.06" y="66.04"/>
-<instance part="C10" gate="G$1" x="363.22" y="55.88" rot="R90"/>
-<instance part="GND10" gate="1" x="347.98" y="35.56"/>
-<instance part="LED11" gate="G$1" x="383.54" y="48.26"/>
-<instance part="P+11" gate="VCC" x="388.62" y="66.04"/>
-<instance part="C11" gate="G$1" x="398.78" y="55.88" rot="R90"/>
-<instance part="GND11" gate="1" x="383.54" y="35.56"/>
-<instance part="LED12" gate="G$1" x="421.64" y="48.26"/>
-<instance part="P+12" gate="VCC" x="426.72" y="66.04"/>
-<instance part="C12" gate="G$1" x="436.88" y="55.88" rot="R90"/>
-<instance part="GND12" gate="1" x="421.64" y="35.56"/>
-<instance part="LED13" gate="G$1" x="454.66" y="48.26"/>
-<instance part="P+13" gate="VCC" x="459.74" y="66.04"/>
-<instance part="C13" gate="G$1" x="469.9" y="55.88" rot="R90"/>
-<instance part="GND13" gate="1" x="454.66" y="35.56"/>
-<instance part="LED14" gate="G$1" x="487.68" y="48.26"/>
-<instance part="P+14" gate="VCC" x="492.76" y="66.04"/>
-<instance part="C14" gate="G$1" x="502.92" y="55.88" rot="R90"/>
-<instance part="GND14" gate="1" x="487.68" y="35.56"/>
-<instance part="LED15" gate="G$1" x="523.24" y="48.26"/>
-<instance part="P+15" gate="VCC" x="528.32" y="66.04"/>
-<instance part="C15" gate="G$1" x="538.48" y="55.88" rot="R90"/>
-<instance part="GND15" gate="1" x="523.24" y="35.56"/>
-<instance part="LED16" gate="G$1" x="561.34" y="48.26"/>
-<instance part="P+16" gate="VCC" x="566.42" y="66.04"/>
-<instance part="C16" gate="G$1" x="576.58" y="55.88" rot="R90"/>
-<instance part="GND16" gate="1" x="561.34" y="35.56"/>
-<instance part="LED17" gate="G$1" x="599.44" y="48.26"/>
-<instance part="P+17" gate="VCC" x="604.52" y="66.04"/>
-<instance part="C17" gate="G$1" x="614.68" y="55.88" rot="R90"/>
-<instance part="GND17" gate="1" x="599.44" y="35.56"/>
-<instance part="LED18" gate="G$1" x="635" y="48.26"/>
-<instance part="P+18" gate="VCC" x="640.08" y="66.04"/>
-<instance part="C18" gate="G$1" x="650.24" y="55.88" rot="R90"/>
-<instance part="GND18" gate="1" x="635" y="35.56"/>
-<instance part="LED19" gate="G$1" x="670.56" y="48.26"/>
-<instance part="P+19" gate="VCC" x="675.64" y="66.04"/>
-<instance part="C19" gate="G$1" x="685.8" y="55.88" rot="R90"/>
-<instance part="GND19" gate="1" x="670.56" y="35.56"/>
-<instance part="LED20" gate="G$1" x="706.12" y="48.26"/>
-<instance part="P+20" gate="VCC" x="711.2" y="66.04"/>
-<instance part="C20" gate="G$1" x="721.36" y="55.88" rot="R90"/>
-<instance part="GND20" gate="1" x="706.12" y="35.56"/>
-<instance part="LED21" gate="G$1" x="744.22" y="48.26"/>
-<instance part="P+21" gate="VCC" x="749.3" y="66.04"/>
-<instance part="C21" gate="G$1" x="759.46" y="55.88" rot="R90"/>
-<instance part="GND21" gate="1" x="744.22" y="35.56"/>
-<instance part="LED22" gate="G$1" x="779.78" y="48.26"/>
-<instance part="P+22" gate="VCC" x="784.86" y="66.04"/>
-<instance part="C22" gate="G$1" x="795.02" y="55.88" rot="R90"/>
-<instance part="GND22" gate="1" x="779.78" y="35.56"/>
-<instance part="LED23" gate="G$1" x="812.8" y="48.26"/>
-<instance part="P+23" gate="VCC" x="817.88" y="66.04"/>
-<instance part="C23" gate="G$1" x="828.04" y="55.88" rot="R90"/>
-<instance part="GND23" gate="1" x="812.8" y="35.56"/>
-<instance part="LED24" gate="G$1" x="848.36" y="48.26"/>
-<instance part="P+24" gate="VCC" x="853.44" y="66.04"/>
-<instance part="C24" gate="G$1" x="863.6" y="55.88" rot="R90"/>
-<instance part="GND24" gate="1" x="848.36" y="35.56"/>
-<instance part="LED25" gate="G$1" x="883.92" y="48.26"/>
-<instance part="P+25" gate="VCC" x="889" y="66.04"/>
-<instance part="C25" gate="G$1" x="899.16" y="55.88" rot="R90"/>
-<instance part="GND25" gate="1" x="883.92" y="35.56"/>
-<instance part="LED26" gate="G$1" x="916.94" y="48.26"/>
-<instance part="P+26" gate="VCC" x="922.02" y="66.04"/>
-<instance part="C26" gate="G$1" x="932.18" y="55.88" rot="R90"/>
-<instance part="GND26" gate="1" x="916.94" y="35.56"/>
-<instance part="LED27" gate="G$1" x="949.96" y="48.26"/>
-<instance part="P+27" gate="VCC" x="955.04" y="66.04"/>
-<instance part="C27" gate="G$1" x="965.2" y="55.88" rot="R90"/>
-<instance part="GND27" gate="1" x="949.96" y="35.56"/>
-<instance part="LED28" gate="G$1" x="982.98" y="48.26"/>
-<instance part="P+28" gate="VCC" x="988.06" y="66.04"/>
-<instance part="C28" gate="G$1" x="998.22" y="55.88" rot="R90"/>
-<instance part="GND28" gate="1" x="982.98" y="35.56"/>
-<instance part="LED29" gate="G$1" x="1018.54" y="48.26"/>
-<instance part="P+29" gate="VCC" x="1023.62" y="66.04"/>
-<instance part="C29" gate="G$1" x="1033.78" y="55.88" rot="R90"/>
-<instance part="GND29" gate="1" x="1018.54" y="35.56"/>
-<instance part="LED30" gate="G$1" x="1054.1" y="48.26"/>
-<instance part="P+30" gate="VCC" x="1059.18" y="66.04"/>
-<instance part="C30" gate="G$1" x="1069.34" y="55.88" rot="R90"/>
-<instance part="GND30" gate="1" x="1054.1" y="35.56"/>
-<instance part="LED31" gate="G$1" x="1089.66" y="48.26"/>
-<instance part="P+31" gate="VCC" x="1094.74" y="66.04"/>
-<instance part="C31" gate="G$1" x="1104.9" y="55.88" rot="R90"/>
-<instance part="GND31" gate="1" x="1089.66" y="35.56"/>
-<instance part="LED32" gate="G$1" x="1125.22" y="48.26"/>
-<instance part="P+32" gate="VCC" x="1130.3" y="66.04"/>
-<instance part="C32" gate="G$1" x="1140.46" y="55.88" rot="R90"/>
-<instance part="GND32" gate="1" x="1125.22" y="35.56"/>
-<instance part="LED33" gate="G$1" x="1160.78" y="48.26"/>
-<instance part="P+33" gate="VCC" x="1165.86" y="66.04"/>
-<instance part="C33" gate="G$1" x="1176.02" y="55.88" rot="R90"/>
-<instance part="GND33" gate="1" x="1160.78" y="35.56"/>
-<instance part="LED34" gate="G$1" x="1196.34" y="48.26"/>
-<instance part="P+34" gate="VCC" x="1201.42" y="66.04"/>
-<instance part="C34" gate="G$1" x="1211.58" y="55.88" rot="R90"/>
-<instance part="GND34" gate="1" x="1196.34" y="35.56"/>
-<instance part="LED35" gate="G$1" x="1229.36" y="48.26"/>
-<instance part="P+35" gate="VCC" x="1234.44" y="66.04"/>
-<instance part="C35" gate="G$1" x="1244.6" y="55.88" rot="R90"/>
-<instance part="GND35" gate="1" x="1229.36" y="35.56"/>
-<instance part="LED36" gate="G$1" x="1264.92" y="48.26"/>
-<instance part="P+36" gate="VCC" x="1270" y="66.04"/>
-<instance part="C36" gate="G$1" x="1280.16" y="55.88" rot="R90"/>
-<instance part="GND36" gate="1" x="1264.92" y="35.56"/>
-<instance part="LED37" gate="G$1" x="1300.48" y="48.26"/>
-<instance part="P+37" gate="VCC" x="1305.56" y="66.04"/>
-<instance part="C37" gate="G$1" x="1315.72" y="55.88" rot="R90"/>
-<instance part="GND37" gate="1" x="1300.48" y="35.56"/>
-<instance part="GND38" gate="1" x="10.16" y="40.64"/>
-<instance part="P+38" gate="VCC" x="10.16" y="50.8"/>
-<instance part="JP3" gate="A" x="0" y="45.72" rot="R180"/>
-<instance part="JP1" gate="A" x="1328.42" y="50.8" rot="R180"/>
-<instance part="GND39" gate="1" x="1338.58" y="55.88" rot="R180"/>
-<instance part="P+39" gate="VCC" x="1338.58" y="45.72" rot="R180"/>
+<instance part="L" gate="G$1" x="25.4" y="48.26" smashed="yes"/>
+<instance part="P+2" gate="VCC" x="30.48" y="66.04" smashed="yes">
+<attribute name="VALUE" x="27.94" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C2" gate="G$1" x="40.64" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="39.37" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="43.18" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND2" gate="1" x="25.4" y="35.56" smashed="yes">
+<attribute name="VALUE" x="22.86" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED1" gate="G$1" x="63.5" y="48.26" smashed="yes"/>
+<instance part="P+1" gate="VCC" x="68.58" y="66.04" smashed="yes">
+<attribute name="VALUE" x="66.04" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C1" gate="G$1" x="78.74" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="77.47" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="81.28" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND1" gate="1" x="63.5" y="35.56" smashed="yes">
+<attribute name="VALUE" x="60.96" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED3" gate="G$1" x="99.06" y="48.26" smashed="yes"/>
+<instance part="P+3" gate="VCC" x="104.14" y="66.04" smashed="yes">
+<attribute name="VALUE" x="101.6" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C3" gate="G$1" x="114.3" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="113.03" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="116.84" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND3" gate="1" x="99.06" y="35.56" smashed="yes">
+<attribute name="VALUE" x="96.52" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED4" gate="G$1" x="134.62" y="48.26" smashed="yes"/>
+<instance part="P+4" gate="VCC" x="139.7" y="66.04" smashed="yes">
+<attribute name="VALUE" x="137.16" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C4" gate="G$1" x="149.86" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="148.59" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="152.4" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND4" gate="1" x="134.62" y="35.56" smashed="yes">
+<attribute name="VALUE" x="132.08" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED5" gate="G$1" x="172.72" y="48.26" smashed="yes"/>
+<instance part="P+5" gate="VCC" x="177.8" y="66.04" smashed="yes">
+<attribute name="VALUE" x="175.26" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C5" gate="G$1" x="187.96" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="186.69" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="190.5" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND5" gate="1" x="172.72" y="35.56" smashed="yes">
+<attribute name="VALUE" x="170.18" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED6" gate="G$1" x="208.28" y="48.26" smashed="yes"/>
+<instance part="P+6" gate="VCC" x="213.36" y="66.04" smashed="yes">
+<attribute name="VALUE" x="210.82" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C6" gate="G$1" x="223.52" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="222.25" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="226.06" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND6" gate="1" x="208.28" y="35.56" smashed="yes">
+<attribute name="VALUE" x="205.74" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED7" gate="G$1" x="241.3" y="48.26" smashed="yes"/>
+<instance part="P+7" gate="VCC" x="246.38" y="66.04" smashed="yes">
+<attribute name="VALUE" x="243.84" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C7" gate="G$1" x="256.54" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="255.27" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="259.08" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND7" gate="1" x="241.3" y="35.56" smashed="yes">
+<attribute name="VALUE" x="238.76" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED8" gate="G$1" x="276.86" y="48.26" smashed="yes"/>
+<instance part="P+8" gate="VCC" x="281.94" y="66.04" smashed="yes">
+<attribute name="VALUE" x="279.4" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C8" gate="G$1" x="292.1" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="290.83" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="294.64" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND8" gate="1" x="276.86" y="35.56" smashed="yes">
+<attribute name="VALUE" x="274.32" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED9" gate="G$1" x="312.42" y="48.26" smashed="yes"/>
+<instance part="P+9" gate="VCC" x="317.5" y="66.04" smashed="yes">
+<attribute name="VALUE" x="314.96" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C9" gate="G$1" x="327.66" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="326.39" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="330.2" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND9" gate="1" x="312.42" y="35.56" smashed="yes">
+<attribute name="VALUE" x="309.88" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED10" gate="G$1" x="347.98" y="48.26" smashed="yes"/>
+<instance part="P+10" gate="VCC" x="353.06" y="66.04" smashed="yes">
+<attribute name="VALUE" x="350.52" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C10" gate="G$1" x="363.22" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="361.95" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="365.76" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND10" gate="1" x="347.98" y="35.56" smashed="yes">
+<attribute name="VALUE" x="345.44" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED11" gate="G$1" x="383.54" y="48.26" smashed="yes"/>
+<instance part="P+11" gate="VCC" x="388.62" y="66.04" smashed="yes">
+<attribute name="VALUE" x="386.08" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C11" gate="G$1" x="398.78" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="397.51" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="401.32" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND11" gate="1" x="383.54" y="35.56" smashed="yes">
+<attribute name="VALUE" x="381" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED12" gate="G$1" x="421.64" y="48.26" smashed="yes"/>
+<instance part="P+12" gate="VCC" x="426.72" y="66.04" smashed="yes">
+<attribute name="VALUE" x="424.18" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C12" gate="G$1" x="436.88" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="435.61" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="439.42" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND12" gate="1" x="421.64" y="35.56" smashed="yes">
+<attribute name="VALUE" x="419.1" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED13" gate="G$1" x="454.66" y="48.26" smashed="yes"/>
+<instance part="P+13" gate="VCC" x="459.74" y="66.04" smashed="yes">
+<attribute name="VALUE" x="457.2" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C13" gate="G$1" x="469.9" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="468.63" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="472.44" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND13" gate="1" x="454.66" y="35.56" smashed="yes">
+<attribute name="VALUE" x="452.12" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED14" gate="G$1" x="487.68" y="48.26" smashed="yes"/>
+<instance part="P+14" gate="VCC" x="492.76" y="66.04" smashed="yes">
+<attribute name="VALUE" x="490.22" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C14" gate="G$1" x="502.92" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="501.65" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="505.46" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND14" gate="1" x="487.68" y="35.56" smashed="yes">
+<attribute name="VALUE" x="485.14" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED15" gate="G$1" x="523.24" y="48.26" smashed="yes"/>
+<instance part="P+15" gate="VCC" x="528.32" y="66.04" smashed="yes">
+<attribute name="VALUE" x="525.78" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C15" gate="G$1" x="538.48" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="537.21" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="541.02" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND15" gate="1" x="523.24" y="35.56" smashed="yes">
+<attribute name="VALUE" x="520.7" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED16" gate="G$1" x="561.34" y="48.26" smashed="yes"/>
+<instance part="P+16" gate="VCC" x="566.42" y="66.04" smashed="yes">
+<attribute name="VALUE" x="563.88" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C16" gate="G$1" x="576.58" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="575.31" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="579.12" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND16" gate="1" x="561.34" y="35.56" smashed="yes">
+<attribute name="VALUE" x="558.8" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED17" gate="G$1" x="599.44" y="48.26" smashed="yes"/>
+<instance part="P+17" gate="VCC" x="604.52" y="66.04" smashed="yes">
+<attribute name="VALUE" x="601.98" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C17" gate="G$1" x="614.68" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="613.41" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="617.22" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND17" gate="1" x="599.44" y="35.56" smashed="yes">
+<attribute name="VALUE" x="596.9" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED18" gate="G$1" x="635" y="48.26" smashed="yes"/>
+<instance part="P+18" gate="VCC" x="640.08" y="66.04" smashed="yes">
+<attribute name="VALUE" x="637.54" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C18" gate="G$1" x="650.24" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="648.97" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="652.78" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND18" gate="1" x="635" y="35.56" smashed="yes">
+<attribute name="VALUE" x="632.46" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED19" gate="G$1" x="670.56" y="48.26" smashed="yes"/>
+<instance part="P+19" gate="VCC" x="675.64" y="66.04" smashed="yes">
+<attribute name="VALUE" x="673.1" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C19" gate="G$1" x="685.8" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="684.53" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="688.34" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND19" gate="1" x="670.56" y="35.56" smashed="yes">
+<attribute name="VALUE" x="668.02" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED20" gate="G$1" x="706.12" y="48.26" smashed="yes"/>
+<instance part="P+20" gate="VCC" x="711.2" y="66.04" smashed="yes">
+<attribute name="VALUE" x="708.66" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C20" gate="G$1" x="721.36" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="720.09" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="723.9" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND20" gate="1" x="706.12" y="35.56" smashed="yes">
+<attribute name="VALUE" x="703.58" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED21" gate="G$1" x="744.22" y="48.26" smashed="yes"/>
+<instance part="P+21" gate="VCC" x="749.3" y="66.04" smashed="yes">
+<attribute name="VALUE" x="746.76" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C21" gate="G$1" x="759.46" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="758.19" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="762" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND21" gate="1" x="744.22" y="35.56" smashed="yes">
+<attribute name="VALUE" x="741.68" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED22" gate="G$1" x="779.78" y="48.26" smashed="yes"/>
+<instance part="P+22" gate="VCC" x="784.86" y="66.04" smashed="yes">
+<attribute name="VALUE" x="782.32" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C22" gate="G$1" x="795.02" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="793.75" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="797.56" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND22" gate="1" x="779.78" y="35.56" smashed="yes">
+<attribute name="VALUE" x="777.24" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED23" gate="G$1" x="812.8" y="48.26" smashed="yes"/>
+<instance part="P+23" gate="VCC" x="817.88" y="66.04" smashed="yes">
+<attribute name="VALUE" x="815.34" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C23" gate="G$1" x="828.04" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="826.77" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="830.58" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND23" gate="1" x="812.8" y="35.56" smashed="yes">
+<attribute name="VALUE" x="810.26" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED24" gate="G$1" x="848.36" y="48.26" smashed="yes"/>
+<instance part="P+24" gate="VCC" x="853.44" y="66.04" smashed="yes">
+<attribute name="VALUE" x="850.9" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C24" gate="G$1" x="863.6" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="862.33" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="866.14" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND24" gate="1" x="848.36" y="35.56" smashed="yes">
+<attribute name="VALUE" x="845.82" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED25" gate="G$1" x="883.92" y="48.26" smashed="yes"/>
+<instance part="P+25" gate="VCC" x="889" y="66.04" smashed="yes">
+<attribute name="VALUE" x="886.46" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C25" gate="G$1" x="899.16" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="897.89" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="901.7" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND25" gate="1" x="883.92" y="35.56" smashed="yes">
+<attribute name="VALUE" x="881.38" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED26" gate="G$1" x="916.94" y="48.26" smashed="yes"/>
+<instance part="P+26" gate="VCC" x="922.02" y="66.04" smashed="yes">
+<attribute name="VALUE" x="919.48" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C26" gate="G$1" x="932.18" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="930.91" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="934.72" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND26" gate="1" x="916.94" y="35.56" smashed="yes">
+<attribute name="VALUE" x="914.4" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED27" gate="G$1" x="949.96" y="48.26" smashed="yes"/>
+<instance part="P+27" gate="VCC" x="955.04" y="66.04" smashed="yes">
+<attribute name="VALUE" x="952.5" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C27" gate="G$1" x="965.2" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="963.93" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="967.74" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND27" gate="1" x="949.96" y="35.56" smashed="yes">
+<attribute name="VALUE" x="947.42" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED28" gate="G$1" x="982.98" y="48.26" smashed="yes"/>
+<instance part="P+28" gate="VCC" x="988.06" y="66.04" smashed="yes">
+<attribute name="VALUE" x="985.52" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C28" gate="G$1" x="998.22" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="996.95" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="1000.76" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND28" gate="1" x="982.98" y="35.56" smashed="yes">
+<attribute name="VALUE" x="980.44" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED29" gate="G$1" x="1018.54" y="48.26" smashed="yes"/>
+<instance part="P+29" gate="VCC" x="1023.62" y="66.04" smashed="yes">
+<attribute name="VALUE" x="1021.08" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C29" gate="G$1" x="1033.78" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="1032.51" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="1036.32" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND29" gate="1" x="1018.54" y="35.56" smashed="yes">
+<attribute name="VALUE" x="1016" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED30" gate="G$1" x="1054.1" y="48.26" smashed="yes"/>
+<instance part="P+30" gate="VCC" x="1059.18" y="66.04" smashed="yes">
+<attribute name="VALUE" x="1056.64" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C30" gate="G$1" x="1069.34" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="1068.07" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="1071.88" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND30" gate="1" x="1054.1" y="35.56" smashed="yes">
+<attribute name="VALUE" x="1051.56" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED31" gate="G$1" x="1089.66" y="48.26" smashed="yes"/>
+<instance part="P+31" gate="VCC" x="1094.74" y="66.04" smashed="yes">
+<attribute name="VALUE" x="1092.2" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C31" gate="G$1" x="1104.9" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="1103.63" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="1107.44" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND31" gate="1" x="1089.66" y="35.56" smashed="yes">
+<attribute name="VALUE" x="1087.12" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED32" gate="G$1" x="1125.22" y="48.26" smashed="yes"/>
+<instance part="P+32" gate="VCC" x="1130.3" y="66.04" smashed="yes">
+<attribute name="VALUE" x="1127.76" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C32" gate="G$1" x="1140.46" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="1139.19" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="1143" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND32" gate="1" x="1125.22" y="35.56" smashed="yes">
+<attribute name="VALUE" x="1122.68" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED33" gate="G$1" x="1160.78" y="48.26" smashed="yes"/>
+<instance part="P+33" gate="VCC" x="1165.86" y="66.04" smashed="yes">
+<attribute name="VALUE" x="1163.32" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C33" gate="G$1" x="1176.02" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="1174.75" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="1178.56" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND33" gate="1" x="1160.78" y="35.56" smashed="yes">
+<attribute name="VALUE" x="1158.24" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED34" gate="G$1" x="1196.34" y="48.26" smashed="yes"/>
+<instance part="P+34" gate="VCC" x="1201.42" y="66.04" smashed="yes">
+<attribute name="VALUE" x="1198.88" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C34" gate="G$1" x="1211.58" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="1210.31" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="1214.12" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND34" gate="1" x="1196.34" y="35.56" smashed="yes">
+<attribute name="VALUE" x="1193.8" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED35" gate="G$1" x="1229.36" y="48.26" smashed="yes"/>
+<instance part="P+35" gate="VCC" x="1234.44" y="66.04" smashed="yes">
+<attribute name="VALUE" x="1231.9" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C35" gate="G$1" x="1244.6" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="1243.33" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="1247.14" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND35" gate="1" x="1229.36" y="35.56" smashed="yes">
+<attribute name="VALUE" x="1226.82" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED36" gate="G$1" x="1264.92" y="48.26" smashed="yes"/>
+<instance part="P+36" gate="VCC" x="1270" y="66.04" smashed="yes">
+<attribute name="VALUE" x="1267.46" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C36" gate="G$1" x="1280.16" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="1278.89" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="1282.7" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND36" gate="1" x="1264.92" y="35.56" smashed="yes">
+<attribute name="VALUE" x="1262.38" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="LED37" gate="G$1" x="1300.48" y="48.26" smashed="yes"/>
+<instance part="P+37" gate="VCC" x="1305.56" y="66.04" smashed="yes">
+<attribute name="VALUE" x="1303.02" y="63.5" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="C37" gate="G$1" x="1315.72" y="55.88" smashed="yes" rot="R90">
+<attribute name="NAME" x="1314.45" y="52.07" size="1.27" layer="95" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="1318.26" y="52.07" size="1.27" layer="96" ratio="10" rot="R90"/>
+</instance>
+<instance part="GND37" gate="1" x="1300.48" y="35.56" smashed="yes">
+<attribute name="VALUE" x="1297.94" y="33.02" size="1.778" layer="96"/>
+</instance>
+<instance part="GND38" gate="1" x="10.16" y="40.64" smashed="yes">
+<attribute name="VALUE" x="7.62" y="38.1" size="1.778" layer="96"/>
+</instance>
+<instance part="P+38" gate="VCC" x="10.16" y="50.8" smashed="yes">
+<attribute name="VALUE" x="7.62" y="48.26" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="JP3" gate="A" x="0" y="45.72" smashed="yes" rot="R180">
+<attribute name="NAME" x="6.35" y="40.005" size="1.778" layer="95" rot="R180"/>
+<attribute name="VALUE" x="6.35" y="53.34" size="1.778" layer="96" rot="R180"/>
+</instance>
+<instance part="JP1" gate="A" x="1328.42" y="50.8" smashed="yes" rot="R180">
+<attribute name="NAME" x="1334.77" y="45.085" size="1.778" layer="95" rot="R180"/>
+<attribute name="VALUE" x="1334.77" y="58.42" size="1.778" layer="96" rot="R180"/>
+</instance>
+<instance part="GND39" gate="1" x="1338.58" y="55.88" smashed="yes" rot="R180">
+<attribute name="VALUE" x="1341.12" y="58.42" size="1.778" layer="96" rot="R180"/>
+</instance>
+<instance part="P+39" gate="VCC" x="1338.58" y="45.72" smashed="yes" rot="R180">
+<attribute name="VALUE" x="1341.12" y="48.26" size="1.778" layer="96" rot="R270"/>
+</instance>
 </instances>
 <busses>
 </busses>
